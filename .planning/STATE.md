@@ -11,8 +11,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 2
 - **Name:** Runtime, Scout, Sentinel, TTS, and Terminal Core
-- **Status:** context_gathered
-- **Next command:** `$gsd-plan-phase 2`
+- **Status:** ready_to_execute
+- **Plans:** 4
+- **Next command:** `$gsd-execute-phase 2`
 
 ## Completed
 
@@ -23,6 +24,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 1 planned.
 - Phase 1 executed and verified.
 - Phase 2 context gathered.
+- Phase 2 planned.
 - Research summary created.
 
 ## Open Decisions
@@ -37,8 +39,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 2 context gathered
-- **Resume file:** `.planning/phases/02-runtime-scout-sentinel-tts-and-terminal-core/02-CONTEXT.md`
+- **Stopped at:** Phase 2 planned
+- **Resume file:** `.planning/phases/02-runtime-scout-sentinel-tts-and-terminal-core/02-01-PLAN.md`
 
 ## Quick Tasks Completed
 

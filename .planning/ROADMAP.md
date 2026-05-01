@@ -44,6 +44,15 @@
 
 **Requirements:** RUN-01, RUN-02, RUN-06, RUN-07, TRM-02, TRM-05, FIL-01, FIL-02, FIL-03, TTS-01
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 02-01 | 1 | Dependencies and runtime config | Ready |
+| 02-02 | 2 | Project scout module | Ready |
+| 02-03 | 2 | Sentinel watcher and TTS modules | Ready |
+| 02-04 | 3 | PTY smoke and phase verification | Ready |
+
 **Success criteria:**
 1. `src/runtimes.js` exports Claude Code and Codex runtime definitions.
 2. `src/tts.js` can speak "SWARM inicializado" on Windows.
