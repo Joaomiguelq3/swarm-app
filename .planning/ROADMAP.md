@@ -168,6 +168,30 @@
 
 **Requirements:** TRM-04, SWM-01, SWM-02, SWM-03, SWM-04, SWM-05, SWM-06, FIL-04, UI-06, TTS-02, TTS-03
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 06-01 | 1 | Swarm orchestrator core and fake runtime | Planned |
+| 06-02 | 2 | Swarm IPC, sentinel, and TTS integration | Planned |
+| 06-03 | 3 | Renderer live orchestration binding | Planned |
+| 06-04 | 4 | Launch overlay and lifecycle polish | Planned |
+| 06-05 | 5 | Phase 6 aggregate verification | Planned |
+
+**Wave dependency notes:**
+- Wave 1 builds the orchestration core and fake-runtime verification base.
+- Wave 2 is blocked on Wave 1 because IPC delegates to `src/swarm.js`.
+- Wave 3 is blocked on Waves 1 and 2 because renderer launch consumes preload orchestration events.
+- Wave 4 is blocked on Wave 3 because the overlay is driven by live launch lifecycle.
+- Wave 5 is blocked on all previous waves because it verifies the complete Phase 6 contract.
+
+**Cross-cutting constraints:**
+- Renderer must remain browser-only and use `window.swarm.orchestration.*`.
+- Automated Phase 6 verification uses fake-runtime smoke tests and must not require real Claude Code or Codex binaries.
+- Feed entries summarize mission, agent, and file events; raw output belongs in pane terminal surfaces.
+- TTS is best-effort and must never block or fail a launch.
+- Mixed Claude+Codex execution in one swarm and real demo hardening remain deferred.
+
 **Success criteria:**
 1. User can enter a mission and launch N agents.
 2. Scout context is included before launch.
@@ -177,6 +201,8 @@
 6. File events and agent events appear in the feed.
 7. Launch overlay displays runtime badge and task animation.
 8. TTS announces agent completion, errors, and mission completion.
+
+**Status:** Planned on 2026-05-01.
 
 ### Phase 7: Shutdown, Hardening, and Demo Readiness
 

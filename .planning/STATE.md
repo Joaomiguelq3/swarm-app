@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 6
 - **Name:** Swarm Launch and Live Orchestration
-- **Status:** context_gathered
-- **Next command:** `$gsd-plan-phase 6`
+- **Status:** ready_to_execute
+- **Next command:** `$gsd-execute-phase 6`
 
 ## Completed
 
@@ -36,6 +36,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 5 planned.
 - Phase 5 executed and verified.
 - Phase 6 context gathered.
+- Phase 6 planned.
 
 ## Open Decisions
 
@@ -56,8 +57,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 6 context gathered
-- **Resume file:** `.planning/phases/06-swarm-launch-and-live-orchestration/06-CONTEXT.md`
+- **Stopped at:** Phase 6 planned
+- **Resume file:** `.planning/phases/06-swarm-launch-and-live-orchestration/06-05-PLAN.md`
 
 ## Quick Tasks Completed
 
