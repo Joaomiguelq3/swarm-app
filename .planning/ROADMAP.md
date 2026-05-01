@@ -105,9 +105,9 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 04-01 | 1 | Home shell and visual system | Ready |
-| 04-02 | 2 | Workspace cards and create flow | Ready |
-| 04-03 | 3 | Home UI smoke and verification | Ready |
+| 04-01 | 1 | Home shell and visual system | Complete |
+| 04-02 | 2 | Workspace cards and create flow | Complete |
+| 04-03 | 3 | Home UI smoke and verification | Complete |
 
 **Wave dependency notes:**
 - Wave 1 creates the Home shell, visual system, Matrix canvas, and typing logo hooks.
@@ -125,6 +125,8 @@
 3. Workspace cards show name, path, runtime badge, model, and date.
 4. Claude Code badge is purple and Codex badge is green.
 5. CSS variables implement the terminal dark theme.
+
+**Status:** Complete on 2026-05-01.
 
 ### Phase 5: Main Workspace UI and Runtime Switching
 
@@ -170,4 +172,4 @@
 
 ## Next Step
 
-Run `$gsd-discuss-phase 4` to gather implementation context for Phase 4.
+Run `$gsd-discuss-phase 5` to gather implementation context for Phase 5.

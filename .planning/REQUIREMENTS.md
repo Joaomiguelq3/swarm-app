@@ -10,7 +10,7 @@
 - [x] **WRK-01**: User can create a workspace by selecting a local folder.
 - [x] **WRK-02**: User can choose Claude Code or Codex when creating a workspace.
 - [x] **WRK-03**: User can reopen saved workspaces from `%APPDATA%\swarm\workspaces.json`.
-- [ ] **WRK-04**: Workspace cards show project name, path, runtime badge, model, and last access date.
+- [x] **WRK-04**: Workspace cards show project name, path, runtime badge, model, and last access date.
 - [ ] **WRK-05**: User can switch between saved workspaces from the main UI.
 
 ### Runtime
@@ -51,13 +51,13 @@
 
 ### User Interface
 
-- [ ] **UI-01**: Home screen shows SWARM logo with typing animation.
-- [ ] **UI-02**: Home screen renders low-opacity Matrix character rain.
+- [x] **UI-01**: Home screen shows SWARM logo with typing animation.
+- [x] **UI-02**: Home screen renders low-opacity Matrix character rain.
 - [ ] **UI-03**: Main screen renders workspace tabs, terminal panes, mission bar, feed, map/files area, and node panel.
-- [ ] **UI-04**: Claude Code badges use purple styling.
-- [ ] **UI-05**: Codex badges use green styling.
+- [x] **UI-04**: Claude Code badges use purple styling.
+- [x] **UI-05**: Codex badges use green styling.
 - [ ] **UI-06**: Launch overlay shows runtime badge, task typing animation, pane glow, and fade out.
-- [ ] **UI-07**: UI uses dark terminal theme with CSS puro.
+- [x] **UI-07**: UI uses dark terminal theme with CSS puro.
 
 ### TTS and Persistence
 
@@ -93,7 +93,7 @@
 | WRK-01 | Phase 3 | Complete |
 | WRK-02 | Phase 3 | Complete |
 | WRK-03 | Phase 3 | Complete |
-| WRK-04 | Phase 4 | Pending |
+| WRK-04 | Phase 4 | Complete |
 | WRK-05 | Phase 5 | Pending |
 | RUN-01 | Phase 2 | Pending |
 | RUN-02 | Phase 2 | Pending |
@@ -119,13 +119,13 @@
 | FIL-02 | Phase 2 | Pending |
 | FIL-03 | Phase 2 | Pending |
 | FIL-04 | Phase 6 | Pending |
-| UI-01 | Phase 4 | Pending |
-| UI-02 | Phase 4 | Pending |
+| UI-01 | Phase 4 | Complete |
+| UI-02 | Phase 4 | Complete |
 | UI-03 | Phase 5 | Pending |
-| UI-04 | Phase 4 | Pending |
-| UI-05 | Phase 4 | Pending |
+| UI-04 | Phase 4 | Complete |
+| UI-05 | Phase 4 | Complete |
 | UI-06 | Phase 6 | Pending |
-| UI-07 | Phase 4 | Pending |
+| UI-07 | Phase 4 | Complete |
 | TTS-01 | Phase 2 | Pending |
 | TTS-02 | Phase 6 | Pending |
 | TTS-03 | Phase 6 | Pending |
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after Phase 3 verification*
+*Last updated: 2026-05-01 after Phase 4 verification*

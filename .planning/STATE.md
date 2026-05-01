@@ -5,15 +5,14 @@
 See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** One developer can launch and supervise multiple independent AI coding tasks in parallel, with clear runtime choice, live terminal visibility, file-change awareness, and graceful process control.
-**Current focus:** Phase 4 - Home UI and Visual System
+**Current focus:** Phase 5 - Main Workspace UI and Runtime Switching
 
 ## Current Phase
 
-- **Phase:** 4
-- **Name:** Home UI and Visual System
-- **Status:** ready_to_execute
-- **Plans:** 3
-- **Next command:** `$gsd-execute-phase 4`
+- **Phase:** 5
+- **Name:** Main Workspace UI and Runtime Switching
+- **Status:** not_started
+- **Next command:** `$gsd-discuss-phase 5`
 
 ## Completed
 
@@ -32,6 +31,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 executed and verified.
 - Phase 4 context gathered.
 - Phase 4 planned.
+- Phase 4 executed and verified.
 
 ## Open Decisions
 
@@ -49,8 +49,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 4 planned
-- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-01-PLAN.md`
+- **Stopped at:** Phase 4 complete
+- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-VERIFICATION.md`
 
 ## Quick Tasks Completed
 

@@ -16,21 +16,20 @@ One developer can launch and supervise multiple independent AI coding tasks in p
 
 - Foundation Electron shell launches with secure IPC boundary - Phase 1
 - Core local modules for runtimes, scout, sentinel, TTS, and PTY smoke are verified - Phase 2
+- Workspace persistence, runtime/model storage, rules-file generation, and safe workspace IPC are verified - Phase 3
+- Home workspace selector, runtime badges, Matrix background, typing logo, and dark terminal visual system are verified - Phase 4
 
 ### Active
 
-- [ ] User can create and reopen workspaces saved in `%APPDATA%\swarm\workspaces.json`.
-- [ ] Each workspace stores its selected runtime, model, path, name, and last access time.
-- [ ] User can choose Claude Code or Codex per workspace.
+- [ ] User can open a saved workspace from the Home screen into the main workspace cockpit.
 - [ ] SWARM spawns the correct runtime command for the selected workspace.
 - [ ] SWARM shows multiple live terminal panes through xterm.js and node-pty.
 - [ ] User can enter a mission, choose agent count, and launch a parallel swarm.
 - [ ] SWARM scouts the target project and injects compact context into agent tasks.
 - [ ] SWARM watches file changes in real time and streams events to the UI.
-- [ ] SWARM creates the correct rules file for each runtime without deleting the other one.
 - [ ] SWARM uses native Windows TTS to announce major lifecycle events.
 - [ ] SWARM kills child processes gracefully when switching runtime or closing the app.
-- [ ] SWARM provides a dark terminal-first UI with runtime badges and launch animation.
+- [ ] SWARM provides launch animation and main workspace runtime controls.
 
 ### Out of Scope
 
@@ -67,13 +66,13 @@ The home screen stores and displays workspaces, including colored runtime badges
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Runtime is selected per workspace | Different projects may work better with Claude Code or Codex | Pending |
-| Runtime config lives in `src/runtimes.js` | Keeps orchestration agnostic and avoids hard-coded branching | Pending |
+| Runtime is selected per workspace | Different projects may work better with Claude Code or Codex | Validated through Phase 3 persistence and Phase 4 Home display |
+| Runtime config lives in `src/runtimes.js` | Keeps orchestration agnostic and avoids hard-coded branching | Validated in Phase 2 and reused in Phase 4 UI styling |
 | JavaScript puro instead of TypeScript | Explicit PRD constraint and faster prototype path | Pending |
 | Use node-pty for embedded terminals | Agents must run in real terminal processes | Pending |
-| Keep both `CLAUDE.md` and `AGENTS.md` when switching runtimes | Preserves compatibility and avoids deleting user rules | Pending |
+| Keep both `CLAUDE.md` and `AGENTS.md` when switching runtimes | Preserves compatibility and avoids deleting user rules | Validated in Phase 3 |
 | Use PowerShell SpeechSynthesizer for TTS | Windows-native, zero external API dependency | Pending |
-| Use local persistence in `%APPDATA%\swarm\workspaces.json` | Simple desktop persistence with no backend | Pending |
+| Use local persistence in `%APPDATA%\swarm\workspaces.json` | Simple desktop persistence with no backend | Validated in Phase 3 |
 
 ## Evolution
 
@@ -93,4 +92,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state.
 
 ---
-*Last updated: 2026-05-01 after Phase 2 completion*
+*Last updated: 2026-05-01 after Phase 4 completion*
