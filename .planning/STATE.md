@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 4
 - **Name:** Home UI and Visual System
-- **Status:** not_started
-- **Next command:** `$gsd-discuss-phase 4`
+- **Status:** context_gathered
+- **Next command:** `$gsd-plan-phase 4`
 
 ## Completed
 
@@ -29,6 +29,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Research summary created.
 - Phase 3 planned.
 - Phase 3 executed and verified.
+- Phase 4 context gathered.
 
 ## Open Decisions
 
@@ -46,8 +47,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 3 complete
-- **Resume file:** `.planning/phases/03-workspace-persistence-and-rules-generation/03-VERIFICATION.md`
+- **Stopped at:** Phase 4 context gathered
+- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-CONTEXT.md`
 
 ## Quick Tasks Completed
 
