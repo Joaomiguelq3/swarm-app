@@ -24,6 +24,12 @@
 
 **Goal:** Create a runnable Electron desktop app with strict process boundaries and the file structure required by the PRD.
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 01-01 | 1 | Electron foundation scaffold | Ready |
+
 **Success criteria:**
 1. `npm start` opens an Electron window without runtime errors.
 2. `main.js`, `preload.js`, `renderer/`, and `src/` exist with the intended responsibilities.
