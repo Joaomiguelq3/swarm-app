@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 5
 - **Name:** Main Workspace UI and Runtime Switching
-- **Status:** not_started
-- **Next command:** `$gsd-discuss-phase 5`
+- **Status:** context_gathered
+- **Next command:** `$gsd-plan-phase 5`
 
 ## Completed
 
@@ -32,6 +32,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 4 context gathered.
 - Phase 4 planned.
 - Phase 4 executed and verified.
+- Phase 5 context gathered.
 
 ## Open Decisions
 
@@ -49,8 +50,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 4 complete
-- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-VERIFICATION.md`
+- **Stopped at:** Phase 5 context gathered
+- **Resume file:** `.planning/phases/05-main-workspace-ui-and-runtime-switching/05-CONTEXT.md`
 
 ## Quick Tasks Completed
 
