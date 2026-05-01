@@ -6,13 +6,124 @@
     <title>SWARM Workspace</title>
     <link rel="stylesheet" href="./style.css">
   </head>
-  <body>
-    <main class="shell">
-      <section class="status-panel">
-        <p class="eyebrow">workspace placeholder</p>
-        <h1>SWARM</h1>
-        <p class="summary">Workspace UI is reserved for a later phase.</p>
+  <body data-route="workspace">
+    <main class="workspace-shell">
+      <section id="workspace-loading" class="route-state" role="status">
+        carregando workspace...
+      </section>
+
+      <section id="workspace-error" class="route-state state-error" role="alert" hidden>
+        <p id="workspace-error-message">workspace indisponivel</p>
+        <a class="button button-secondary" href="./home.html">voltar</a>
+      </section>
+
+      <section id="workspace-content" class="workspace-cockpit" hidden>
+        <header class="workspace-topbar">
+          <nav id="workspace-tabs" class="workspace-tabs" aria-label="Workspaces salvos"></nav>
+        </header>
+
+        <section class="workspace-main-header" aria-label="Workspace ativo">
+          <div class="workspace-heading">
+            <p class="eyebrow">workspace ativo</p>
+            <h1 id="active-workspace-name">SWARM</h1>
+            <p id="active-workspace-path" class="workspace-path-line"></p>
+          </div>
+
+          <div class="workspace-runtime-summary">
+            <div id="active-runtime-badge"></div>
+            <p>modelo: <span id="active-workspace-model">default</span></p>
+          </div>
+        </section>
+
+        <section class="workspace-grid-layout">
+          <section class="terminal-area" aria-label="Terminal panes">
+            <div id="pane-grid" class="pane-grid"></div>
+
+            <section class="mission-bar" aria-label="Missao do swarm">
+              <label class="mission-field">
+                <span>missao</span>
+                <input id="mission-input" type="text" placeholder="descreva a missao para a fase 6">
+              </label>
+
+              <label class="agent-count-field">
+                <span>agentes</span>
+                <input id="agent-count" type="number" min="1" max="6" value="3">
+              </label>
+
+              <button id="launch-swarm-button" class="button button-primary" type="button">
+                LAUNCH SWARM
+              </button>
+            </section>
+
+            <section class="activity-panel" aria-label="Feed de atividade">
+              <div class="panel-header compact">
+                <div>
+                  <p class="section-kicker">feed</p>
+                  <h2>Eventos locais</h2>
+                </div>
+              </div>
+              <ul id="activity-feed" class="activity-feed"></ul>
+            </section>
+          </section>
+
+          <aside class="side-panel" aria-label="Map files e node panel">
+            <section class="map-panel">
+              <div class="panel-header compact">
+                <div>
+                  <p class="section-kicker">map files</p>
+                  <h2>Projeto</h2>
+                </div>
+              </div>
+              <p class="muted-copy">sentinel e scout conectam aqui na fase 6</p>
+            </section>
+
+            <section class="node-panel">
+              <div class="panel-header compact">
+                <div>
+                  <p class="section-kicker">node panel</p>
+                  <h2>Runtime</h2>
+                </div>
+                <div id="node-runtime-badge"></div>
+              </div>
+
+              <label class="field">
+                <span>Runtime</span>
+                <select id="runtime-select"></select>
+              </label>
+
+              <label class="field">
+                <span>Modelo</span>
+                <select id="model-select"></select>
+              </label>
+
+              <dl class="node-facts">
+                <div>
+                  <dt>workspace</dt>
+                  <dd id="node-workspace-name">-</dd>
+                </div>
+                <div>
+                  <dt>path</dt>
+                  <dd id="node-workspace-path">-</dd>
+                </div>
+                <div>
+                  <dt>modelo</dt>
+                  <dd id="node-model-value">-</dd>
+                </div>
+                <div>
+                  <dt>processos</dt>
+                  <dd id="node-process-state">processos ativos: 0</dd>
+                </div>
+                <div>
+                  <dt>danger</dt>
+                  <dd id="node-danger-state">DANGER OFF</dd>
+                </div>
+              </dl>
+            </section>
+          </aside>
+        </section>
       </section>
     </main>
+
+    <script src="./app.js"></script>
   </body>
 </html>
