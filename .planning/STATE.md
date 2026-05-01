@@ -11,8 +11,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 4
 - **Name:** Home UI and Visual System
-- **Status:** context_gathered
-- **Next command:** `$gsd-plan-phase 4`
+- **Status:** ready_to_execute
+- **Plans:** 3
+- **Next command:** `$gsd-execute-phase 4`
 
 ## Completed
 
@@ -30,6 +31,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 planned.
 - Phase 3 executed and verified.
 - Phase 4 context gathered.
+- Phase 4 planned.
 
 ## Open Decisions
 
@@ -47,8 +49,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 4 context gathered
-- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-CONTEXT.md`
+- **Stopped at:** Phase 4 planned
+- **Resume file:** `.planning/phases/04-home-ui-and-visual-system/04-01-PLAN.md`
 
 ## Quick Tasks Completed
 

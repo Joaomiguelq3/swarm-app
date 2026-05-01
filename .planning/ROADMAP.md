@@ -101,6 +101,24 @@
 
 **Requirements:** WRK-04, UI-01, UI-02, UI-04, UI-05, UI-07
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 04-01 | 1 | Home shell and visual system | Ready |
+| 04-02 | 2 | Workspace cards and create flow | Ready |
+| 04-03 | 3 | Home UI smoke and verification | Ready |
+
+**Wave dependency notes:**
+- Wave 1 creates the Home shell, visual system, Matrix canvas, and typing logo hooks.
+- Wave 2 is blocked on Wave 1 because it renders workspace data into the shell.
+- Wave 3 is blocked on Waves 1 and 2 because it verifies the complete Home UI.
+
+**Cross-cutting constraints:**
+- Renderer code must stay browser-only and use `window.swarm.workspaces.*` for persistence.
+- The Home screen must feel like a compact operations console, not a marketing landing page.
+- Main workspace cockpit, terminal panes, runtime process lifecycle, and real agent spawning remain deferred.
+
 **Success criteria:**
 1. Home screen shows SWARM typing logo.
 2. Home screen renders low-opacity Matrix rain.
