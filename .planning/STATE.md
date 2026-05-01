@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 6
 - **Name:** Swarm Launch and Live Orchestration
-- **Status:** not_started
-- **Next command:** `$gsd-discuss-phase 6`
+- **Status:** context_gathered
+- **Next command:** `$gsd-plan-phase 6`
 
 ## Completed
 
@@ -35,6 +35,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 5 context gathered.
 - Phase 5 planned.
 - Phase 5 executed and verified.
+- Phase 6 context gathered.
 
 ## Open Decisions
 
@@ -50,11 +51,13 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 exposes minimal workspace IPC without building the full Home UI.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
 - Phase 5 implements stop-before-runtime-switch as a named UI lifecycle hook/local pane reset; real child-process termination is wired in later orchestration/hardening phases.
+- Phase 6 will use deterministic local mission decomposition first; external AI decomposition is deferred.
+- Phase 6 automated verification uses a fake/test runtime and does not require real Claude Code or Codex binaries.
 
 ## Last Session
 
-- **Stopped at:** Phase 5 complete
-- **Resume file:** `.planning/phases/05-main-workspace-ui-and-runtime-switching/05-VERIFICATION.md`
+- **Stopped at:** Phase 6 context gathered
+- **Resume file:** `.planning/phases/06-swarm-launch-and-live-orchestration/06-CONTEXT.md`
 
 ## Quick Tasks Completed
 
