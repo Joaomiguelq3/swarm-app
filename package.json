@@ -6,13 +6,16 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check src/workspaces.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node --check scripts/smoke-workspaces.js && node --check scripts/smoke-workspace-ipc.js && node --check scripts/smoke-phase3.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
     "check:runtimes": "node scripts/check-runtimes.js",
     "smoke:scout": "node scripts/smoke-scout.js",
     "smoke:sentinel": "node scripts/smoke-sentinel.js",
     "smoke:tts": "node scripts/smoke-tts.js",
     "smoke:pty": "node scripts/smoke-pty.js",
-    "smoke:phase2": "npm.cmd run check:runtimes && npm.cmd run smoke:scout && npm.cmd run smoke:sentinel && npm.cmd run smoke:tts && npm.cmd run smoke:pty && npm.cmd run check"
+    "smoke:phase2": "npm.cmd run check:runtimes && npm.cmd run smoke:scout && npm.cmd run smoke:sentinel && npm.cmd run smoke:tts && npm.cmd run smoke:pty && npm.cmd run check",
+    "smoke:workspaces": "node scripts/smoke-workspaces.js",
+    "smoke:workspace-ipc": "node scripts/smoke-workspace-ipc.js",
+    "smoke:phase3": "node scripts/smoke-phase3.js"
   },
   "devDependencies": {
     "electron": "^37.2.0"
