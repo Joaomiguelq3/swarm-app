@@ -7,9 +7,9 @@
 
 ### Workspace
 
-- [ ] **WRK-01**: User can create a workspace by selecting a local folder.
-- [ ] **WRK-02**: User can choose Claude Code or Codex when creating a workspace.
-- [ ] **WRK-03**: User can reopen saved workspaces from `%APPDATA%\swarm\workspaces.json`.
+- [x] **WRK-01**: User can create a workspace by selecting a local folder.
+- [x] **WRK-02**: User can choose Claude Code or Codex when creating a workspace.
+- [x] **WRK-03**: User can reopen saved workspaces from `%APPDATA%\swarm\workspaces.json`.
 - [ ] **WRK-04**: Workspace cards show project name, path, runtime badge, model, and last access date.
 - [ ] **WRK-05**: User can switch between saved workspaces from the main UI.
 
@@ -17,7 +17,7 @@
 
 - [ ] **RUN-01**: SWARM spawns Claude Code with `claude --dangerously-skip-permissions`.
 - [ ] **RUN-02**: SWARM spawns Codex with `codex --approval-mode full-auto`.
-- [ ] **RUN-03**: SWARM stores runtime and model per workspace.
+- [x] **RUN-03**: SWARM stores runtime and model per workspace.
 - [ ] **RUN-04**: User can switch the current workspace runtime from the node panel.
 - [ ] **RUN-05**: Runtime switch kills active processes before applying the new runtime.
 - [ ] **RUN-06**: Claude workspaces create or preserve `CLAUDE.md`.
@@ -64,7 +64,7 @@
 - [ ] **TTS-01**: SWARM announces swarm start with selected runtime and agent count.
 - [ ] **TTS-02**: SWARM announces agent completion and errors.
 - [ ] **TTS-03**: SWARM announces mission completion.
-- [ ] **PRS-01**: SWARM writes `brain.json` in each project root.
+- [x] **PRS-01**: SWARM writes `brain.json` in each project root.
 - [ ] **PRS-02**: SWARM kills child processes gracefully when closing the app.
 
 ## v2 Requirements
@@ -90,14 +90,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WRK-01 | Phase 3 | Pending |
-| WRK-02 | Phase 3 | Pending |
-| WRK-03 | Phase 3 | Pending |
+| WRK-01 | Phase 3 | Complete |
+| WRK-02 | Phase 3 | Complete |
+| WRK-03 | Phase 3 | Complete |
 | WRK-04 | Phase 4 | Pending |
 | WRK-05 | Phase 5 | Pending |
 | RUN-01 | Phase 2 | Pending |
 | RUN-02 | Phase 2 | Pending |
-| RUN-03 | Phase 3 | Pending |
+| RUN-03 | Phase 3 | Complete |
 | RUN-04 | Phase 5 | Pending |
 | RUN-05 | Phase 5 | Pending |
 | RUN-06 | Phase 2 | Pending |
@@ -129,7 +129,7 @@
 | TTS-01 | Phase 2 | Pending |
 | TTS-02 | Phase 6 | Pending |
 | TTS-03 | Phase 6 | Pending |
-| PRS-01 | Phase 3 | Pending |
+| PRS-01 | Phase 3 | Complete |
 | PRS-02 | Phase 7 | Pending |
 
 **Coverage:**
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after initial definition*
+*Last updated: 2026-05-01 after Phase 3 verification*

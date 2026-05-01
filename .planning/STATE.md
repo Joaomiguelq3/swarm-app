@@ -5,15 +5,14 @@
 See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** One developer can launch and supervise multiple independent AI coding tasks in parallel, with clear runtime choice, live terminal visibility, file-change awareness, and graceful process control.
-**Current focus:** Phase 3 - Workspace Persistence and Rules Generation
+**Current focus:** Phase 4 - Home UI and Visual System
 
 ## Current Phase
 
-- **Phase:** 3
-- **Name:** Workspace Persistence and Rules Generation
-- **Status:** ready_to_execute
-- **Plans:** 3
-- **Next command:** `$gsd-execute-phase 3`
+- **Phase:** 4
+- **Name:** Home UI and Visual System
+- **Status:** not_started
+- **Next command:** `$gsd-discuss-phase 4`
 
 ## Completed
 
@@ -29,6 +28,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 context gathered.
 - Research summary created.
 - Phase 3 planned.
+- Phase 3 executed and verified.
 
 ## Open Decisions
 
@@ -39,15 +39,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 2 will create runtime config only, not real Claude/Codex agent spawning.
 - Phase 2 will keep scout, sentinel, and TTS independently testable modules.
 - Phase 2 PTY and TTS checks pass outside sandbox; PTY requires ConPTY access.
-- Phase 3 will persist workspaces via Electron userData path with `%APPDATA%\swarm` fallback.
-- Phase 3 will preserve existing `brain.json`, `CLAUDE.md`, and `AGENTS.md`.
-- Phase 3 will expose minimal workspace IPC without building the full Home UI.
+- Phase 3 persists workspaces via Electron userData path with `%APPDATA%\swarm` fallback.
+- Phase 3 preserves existing `brain.json`, `CLAUDE.md`, and `AGENTS.md`.
+- Phase 3 exposes minimal workspace IPC without building the full Home UI.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
 
 ## Last Session
 
-- **Stopped at:** Phase 3 planned
-- **Resume file:** `.planning/phases/03-workspace-persistence-and-rules-generation/03-01-PLAN.md`
+- **Stopped at:** Phase 3 complete
+- **Resume file:** `.planning/phases/03-workspace-persistence-and-rules-generation/03-VERIFICATION.md`
 
 ## Quick Tasks Completed
 

@@ -72,9 +72,9 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 03-01 | 1 | Workspace persistence core | Ready |
-| 03-02 | 2 | Workspace IPC bridge | Ready |
-| 03-03 | 3 | Phase 3 aggregate verification | Ready |
+| 03-01 | 1 | Workspace persistence core | Complete |
+| 03-02 | 2 | Workspace IPC bridge | Complete |
+| 03-03 | 3 | Phase 3 aggregate verification | Complete |
 
 **Wave dependency notes:**
 - Wave 1 builds the core module and prepares npm scripts.
@@ -92,6 +92,8 @@
 3. New workspace flow creates `brain.json`.
 4. New workspace flow creates `CLAUDE.md` or `AGENTS.md` according to runtime.
 5. Switching runtime creates the other rules file without deleting the existing one.
+
+**Status:** Complete on 2026-05-01.
 
 ### Phase 4: Home UI and Visual System
 
@@ -150,4 +152,4 @@
 
 ## Next Step
 
-Run `$gsd-discuss-phase 1` to gather implementation context for Phase 1, or `$gsd-plan-phase 1 --skip-research` if the foundation decisions are already locked.
+Run `$gsd-discuss-phase 4` to gather implementation context for Phase 4.
