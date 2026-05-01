@@ -21,7 +21,7 @@ metrics:
 
 | Commit | Description |
 |--------|-------------|
-| pending | Workspace route/cockpit implementation will be committed with this summary. |
+| 4eee1d5 | Workspace route/cockpit implementation and runtime controls. |
 
 ## Changes
 

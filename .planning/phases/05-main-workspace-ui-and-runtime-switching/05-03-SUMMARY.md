@@ -21,7 +21,7 @@ metrics:
 
 | Commit | Description |
 |--------|-------------|
-| pending | Phase 5 smoke scripts, aggregate verification, and tracking updates will be committed with this summary. |
+| 39ca1d5 | Phase 5 smoke scripts, aggregate verification, and tracking updates. |
 
 ## Changes
 

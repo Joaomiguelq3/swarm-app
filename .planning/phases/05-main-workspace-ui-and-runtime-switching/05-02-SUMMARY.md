@@ -21,7 +21,7 @@ metrics:
 
 | Commit | Description |
 |--------|-------------|
-| pending | Runtime controls and pane lifecycle implementation will be committed with this summary. |
+| 4eee1d5 | Runtime controls and pane lifecycle implementation. |
 
 ## Changes
 
