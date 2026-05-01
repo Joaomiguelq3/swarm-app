@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { registerWorkspaceIpc } = require('./src/workspace-ipc');
 
 let mainWindow = null;
 
@@ -34,6 +35,8 @@ ipcMain.handle('swarm:get-app-info', () => ({
   runtime: 'electron',
   status: 'foundation-ready'
 }));
+
+registerWorkspaceIpc({ ipcMain, app });
 
 app.whenReady().then(() => {
   createWindow();
