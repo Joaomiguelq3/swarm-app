@@ -5,15 +5,14 @@
 See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** One developer can launch and supervise multiple independent AI coding tasks in parallel, with clear runtime choice, live terminal visibility, file-change awareness, and graceful process control.
-**Current focus:** Phase 2 - Runtime, Scout, Sentinel, TTS, and Terminal Core
+**Current focus:** Phase 3 - Workspace Persistence and Rules Generation
 
 ## Current Phase
 
-- **Phase:** 2
-- **Name:** Runtime, Scout, Sentinel, TTS, and Terminal Core
-- **Status:** ready_to_execute
-- **Plans:** 4
-- **Next command:** `$gsd-execute-phase 2`
+- **Phase:** 3
+- **Name:** Workspace Persistence and Rules Generation
+- **Status:** ready_for_discussion
+- **Next command:** `$gsd-discuss-phase 3`
 
 ## Completed
 
@@ -25,6 +24,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 1 executed and verified.
 - Phase 2 context gathered.
 - Phase 2 planned.
+- Phase 2 executed and verified.
 - Research summary created.
 
 ## Open Decisions
@@ -35,12 +35,13 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 2 will install/prove `node-pty` with a PowerShell smoke test.
 - Phase 2 will create runtime config only, not real Claude/Codex agent spawning.
 - Phase 2 will keep scout, sentinel, and TTS independently testable modules.
+- Phase 2 PTY and TTS checks pass outside sandbox; PTY requires ConPTY access.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
 
 ## Last Session
 
-- **Stopped at:** Phase 2 planned
-- **Resume file:** `.planning/phases/02-runtime-scout-sentinel-tts-and-terminal-core/02-01-PLAN.md`
+- **Stopped at:** Phase 2 complete
+- **Resume file:** `.planning/phases/02-runtime-scout-sentinel-tts-and-terminal-core/02-VERIFICATION.md`
 
 ## Quick Tasks Completed
 

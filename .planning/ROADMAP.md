@@ -48,10 +48,10 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 02-01 | 1 | Dependencies and runtime config | Ready |
-| 02-02 | 2 | Project scout module | Ready |
-| 02-03 | 2 | Sentinel watcher and TTS modules | Ready |
-| 02-04 | 3 | PTY smoke and phase verification | Ready |
+| 02-01 | 1 | Dependencies and runtime config | Complete |
+| 02-02 | 2 | Project scout module | Complete |
+| 02-03 | 2 | Sentinel watcher and TTS modules | Complete |
+| 02-04 | 3 | PTY smoke and phase verification | Complete |
 
 **Success criteria:**
 1. `src/runtimes.js` exports Claude Code and Codex runtime definitions.
@@ -59,6 +59,8 @@
 3. `src/scout.js` maps a folder while ignoring configured directories.
 4. `src/sentinel.js` emits create/change/delete events.
 5. A test pty process can stream output into a terminal surface.
+
+**Status:** Complete on 2026-05-01.
 
 ### Phase 3: Workspace Persistence and Rules Generation
 

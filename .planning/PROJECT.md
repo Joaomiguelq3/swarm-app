@@ -15,6 +15,7 @@ One developer can launch and supervise multiple independent AI coding tasks in p
 ### Validated
 
 - Foundation Electron shell launches with secure IPC boundary - Phase 1
+- Core local modules for runtimes, scout, sentinel, TTS, and PTY smoke are verified - Phase 2
 
 ### Active
 
@@ -92,4 +93,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state.
 
 ---
-*Last updated: 2026-05-01 after Phase 1 completion*
+*Last updated: 2026-05-01 after Phase 2 completion*
