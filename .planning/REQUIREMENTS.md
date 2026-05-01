@@ -11,24 +11,24 @@
 - [x] **WRK-02**: User can choose Claude Code or Codex when creating a workspace.
 - [x] **WRK-03**: User can reopen saved workspaces from `%APPDATA%\swarm\workspaces.json`.
 - [x] **WRK-04**: Workspace cards show project name, path, runtime badge, model, and last access date.
-- [ ] **WRK-05**: User can switch between saved workspaces from the main UI.
+- [x] **WRK-05**: User can switch between saved workspaces from the main UI.
 
 ### Runtime
 
 - [ ] **RUN-01**: SWARM spawns Claude Code with `claude --dangerously-skip-permissions`.
 - [ ] **RUN-02**: SWARM spawns Codex with `codex --approval-mode full-auto`.
 - [x] **RUN-03**: SWARM stores runtime and model per workspace.
-- [ ] **RUN-04**: User can switch the current workspace runtime from the node panel.
-- [ ] **RUN-05**: Runtime switch kills active processes before applying the new runtime.
+- [x] **RUN-04**: User can switch the current workspace runtime from the node panel.
+- [x] **RUN-05**: Runtime switch kills active processes before applying the new runtime.
 - [ ] **RUN-06**: Claude workspaces create or preserve `CLAUDE.md`.
 - [ ] **RUN-07**: Codex workspaces create or preserve `AGENTS.md`.
-- [ ] **RUN-08**: Model dropdown options change according to selected runtime.
+- [x] **RUN-08**: Model dropdown options change according to selected runtime.
 
 ### Terminal Panes
 
-- [ ] **TRM-01**: User can see multiple terminal panes in the main workspace screen.
+- [x] **TRM-01**: User can see multiple terminal panes in the main workspace screen.
 - [ ] **TRM-02**: Each pane renders a real interactive terminal using xterm.js and node-pty.
-- [ ] **TRM-03**: Each pane shows runtime indicator and status.
+- [x] **TRM-03**: Each pane shows runtime indicator and status.
 - [ ] **TRM-04**: Pane status can display IDLE, THINKING, WRITING, DONE, and ERROR.
 - [ ] **TRM-05**: Terminal output streams live from each agent process.
 
@@ -53,7 +53,7 @@
 
 - [x] **UI-01**: Home screen shows SWARM logo with typing animation.
 - [x] **UI-02**: Home screen renders low-opacity Matrix character rain.
-- [ ] **UI-03**: Main screen renders workspace tabs, terminal panes, mission bar, feed, map/files area, and node panel.
+- [x] **UI-03**: Main screen renders workspace tabs, terminal panes, mission bar, feed, map/files area, and node panel.
 - [x] **UI-04**: Claude Code badges use purple styling.
 - [x] **UI-05**: Codex badges use green styling.
 - [ ] **UI-06**: Launch overlay shows runtime badge, task typing animation, pane glow, and fade out.
@@ -94,18 +94,18 @@
 | WRK-02 | Phase 3 | Complete |
 | WRK-03 | Phase 3 | Complete |
 | WRK-04 | Phase 4 | Complete |
-| WRK-05 | Phase 5 | Pending |
+| WRK-05 | Phase 5 | Complete |
 | RUN-01 | Phase 2 | Pending |
 | RUN-02 | Phase 2 | Pending |
 | RUN-03 | Phase 3 | Complete |
-| RUN-04 | Phase 5 | Pending |
-| RUN-05 | Phase 5 | Pending |
+| RUN-04 | Phase 5 | Complete |
+| RUN-05 | Phase 5 | Complete |
 | RUN-06 | Phase 2 | Pending |
 | RUN-07 | Phase 2 | Pending |
-| RUN-08 | Phase 5 | Pending |
-| TRM-01 | Phase 4 | Pending |
+| RUN-08 | Phase 5 | Complete |
+| TRM-01 | Phase 5 | Complete |
 | TRM-02 | Phase 2 | Pending |
-| TRM-03 | Phase 4 | Pending |
+| TRM-03 | Phase 5 | Complete |
 | TRM-04 | Phase 6 | Pending |
 | TRM-05 | Phase 2 | Pending |
 | SWM-01 | Phase 6 | Pending |
@@ -121,7 +121,7 @@
 | FIL-04 | Phase 6 | Pending |
 | UI-01 | Phase 4 | Complete |
 | UI-02 | Phase 4 | Complete |
-| UI-03 | Phase 5 | Pending |
+| UI-03 | Phase 5 | Complete |
 | UI-04 | Phase 4 | Complete |
 | UI-05 | Phase 4 | Complete |
 | UI-06 | Phase 6 | Pending |
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after Phase 4 verification*
+*Last updated: 2026-05-01 after Phase 5 verification*

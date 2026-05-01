@@ -138,9 +138,9 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 05-01 | 1 | Workspace route and cockpit shell | Planned |
-| 05-02 | 2 | Runtime controls and pane lifecycle state | Planned |
-| 05-03 | 3 | Workspace UI smoke and phase verification | Planned |
+| 05-01 | 1 | Workspace route and cockpit shell | Complete |
+| 05-02 | 2 | Runtime controls and pane lifecycle state | Complete |
+| 05-03 | 3 | Workspace UI smoke and phase verification | Complete |
 
 **Wave dependency notes:**
 - Wave 1 builds the route and static cockpit shell.
@@ -160,7 +160,7 @@
 4. Runtime switch stops active processes before applying the new runtime.
 5. Panes show runtime indicators.
 
-**Status:** Planned on 2026-05-01.
+**Status:** Complete on 2026-05-01.
 
 ### Phase 6: Swarm Launch and Live Orchestration
 

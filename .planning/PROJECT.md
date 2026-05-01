@@ -18,18 +18,20 @@ One developer can launch and supervise multiple independent AI coding tasks in p
 - Core local modules for runtimes, scout, sentinel, TTS, and PTY smoke are verified - Phase 2
 - Workspace persistence, runtime/model storage, rules-file generation, and safe workspace IPC are verified - Phase 3
 - Home workspace selector, runtime badges, Matrix background, typing logo, and dark terminal visual system are verified - Phase 4
+- Main workspace cockpit, workspace tabs, terminal pane surfaces, mission bar, feed, map/files area, node panel, runtime switch hook, and model dropdown behavior are verified - Phase 5
 
 ### Active
 
-- [ ] User can open a saved workspace from the Home screen into the main workspace cockpit.
+- [x] User can open a saved workspace from the Home screen into the main workspace cockpit.
 - [ ] SWARM spawns the correct runtime command for the selected workspace.
-- [ ] SWARM shows multiple live terminal panes through xterm.js and node-pty.
-- [ ] User can enter a mission, choose agent count, and launch a parallel swarm.
+- [x] SWARM shows multiple terminal pane surfaces in the main workspace screen.
+- [x] User can enter a mission and choose agent count in the main workspace UI.
 - [ ] SWARM scouts the target project and injects compact context into agent tasks.
 - [ ] SWARM watches file changes in real time and streams events to the UI.
 - [ ] SWARM uses native Windows TTS to announce major lifecycle events.
 - [ ] SWARM kills child processes gracefully when switching runtime or closing the app.
-- [ ] SWARM provides launch animation and main workspace runtime controls.
+- [x] SWARM provides main workspace runtime controls.
+- [ ] SWARM provides launch animation.
 
 ### Out of Scope
 
@@ -69,7 +71,7 @@ The home screen stores and displays workspaces, including colored runtime badges
 | Runtime is selected per workspace | Different projects may work better with Claude Code or Codex | Validated through Phase 3 persistence and Phase 4 Home display |
 | Runtime config lives in `src/runtimes.js` | Keeps orchestration agnostic and avoids hard-coded branching | Validated in Phase 2 and reused in Phase 4 UI styling |
 | JavaScript puro instead of TypeScript | Explicit PRD constraint and faster prototype path | Pending |
-| Use node-pty for embedded terminals | Agents must run in real terminal processes | Pending |
+| Use node-pty for embedded terminals | Agents must run in real terminal processes | Pane surfaces verified in Phase 5; real attachment pending Phase 6 |
 | Keep both `CLAUDE.md` and `AGENTS.md` when switching runtimes | Preserves compatibility and avoids deleting user rules | Validated in Phase 3 |
 | Use PowerShell SpeechSynthesizer for TTS | Windows-native, zero external API dependency | Pending |
 | Use local persistence in `%APPDATA%\swarm\workspaces.json` | Simple desktop persistence with no backend | Validated in Phase 3 |
@@ -92,4 +94,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state.
 
 ---
-*Last updated: 2026-05-01 after Phase 4 completion*
+*Last updated: 2026-05-01 after Phase 5 completion*

@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check src/workspaces.js && node --check src/workspace-ipc.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node --check scripts/smoke-workspaces.js && node --check scripts/smoke-workspace-ipc.js && node --check scripts/smoke-phase3.js && node --check scripts/smoke-home-ui.js && node --check scripts/smoke-phase4.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check src/workspaces.js && node --check src/workspace-ipc.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node --check scripts/smoke-workspaces.js && node --check scripts/smoke-workspace-ipc.js && node --check scripts/smoke-phase3.js && node --check scripts/smoke-home-ui.js && node --check scripts/smoke-phase4.js && node --check scripts/smoke-workspace-ui.js && node --check scripts/smoke-phase5.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
     "check:runtimes": "node scripts/check-runtimes.js",
     "smoke:scout": "node scripts/smoke-scout.js",
     "smoke:sentinel": "node scripts/smoke-sentinel.js",
@@ -17,7 +17,9 @@
     "smoke:workspace-ipc": "node scripts/smoke-workspace-ipc.js",
     "smoke:phase3": "node scripts/smoke-phase3.js",
     "smoke:home-ui": "node scripts/smoke-home-ui.js",
-    "smoke:phase4": "node scripts/smoke-phase4.js"
+    "smoke:phase4": "node scripts/smoke-phase4.js",
+    "smoke:workspace-ui": "node scripts/smoke-workspace-ui.js",
+    "smoke:phase5": "node scripts/smoke-phase5.js"
   },
   "devDependencies": {
     "electron": "^37.2.0"
