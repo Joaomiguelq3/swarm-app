@@ -28,13 +28,15 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 01-01 | 1 | Electron foundation scaffold | Ready |
+| 01-01 | 1 | Electron foundation scaffold | Complete |
 
 **Success criteria:**
 1. `npm start` opens an Electron window without runtime errors.
 2. `main.js`, `preload.js`, `renderer/`, and `src/` exist with the intended responsibilities.
 3. Electron security settings use context isolation and no renderer Node integration.
 4. `.gitignore`, `.env`, `brain.json`, `CLAUDE.md`, and `AGENTS.md` exist.
+
+**Status:** Complete on 2026-05-01.
 
 ### Phase 2: Runtime, Scout, Sentinel, TTS, and Terminal Core
 

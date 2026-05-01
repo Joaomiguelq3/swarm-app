@@ -1,0 +1,14 @@
+{
+  "name": "swarm-app",
+  "version": "0.1.0",
+  "description": "SWARM desktop multi-agent orchestrator",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\""
+  },
+  "devDependencies": {
+    "electron": "^37.2.0"
+  }
+}
