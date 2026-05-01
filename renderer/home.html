@@ -6,29 +6,91 @@
     <title>SWARM</title>
     <link rel="stylesheet" href="./style.css">
   </head>
-  <body>
-    <main class="shell">
-      <section class="status-panel" aria-label="SWARM status">
-        <p class="eyebrow">desktop orchestrator</p>
-        <h1>SWARM</h1>
-        <p class="summary">Electron foundation online. Workspace orchestration starts in later phases.</p>
+  <body data-route="home">
+    <canvas id="matrix-canvas" class="matrix-canvas" aria-hidden="true"></canvas>
 
-        <dl class="status-grid">
-          <div>
-            <dt>shell</dt>
-            <dd id="shell-status">checking</dd>
+    <main class="home-shell">
+      <header class="home-header" aria-label="SWARM home">
+        <div class="brand-block">
+          <p class="eyebrow">multi-agent orchestrator</p>
+          <h1 class="brand-logo" aria-label="SWARM">
+            <span id="typing-logo">SWARM</span><span class="typing-cursor" aria-hidden="true"></span>
+          </h1>
+        </div>
+
+        <div class="home-actions">
+          <div class="bridge-status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="shell-status">checking</span>
           </div>
+          <button id="new-workspace-button" class="button button-primary" type="button">
+            <span aria-hidden="true">+</span>
+            novo workspace
+          </button>
+        </div>
+      </header>
+
+      <section class="workspace-panel" aria-label="Workspaces salvos">
+        <div class="panel-header">
           <div>
-            <dt>route</dt>
-            <dd>home.html</dd>
+            <p class="section-kicker">workspaces</p>
+            <h2>Projetos salvos</h2>
           </div>
-          <div>
-            <dt>phase</dt>
-            <dd>01 foundation</dd>
-          </div>
-        </dl>
+          <span id="workspace-count" class="counter">0</span>
+        </div>
+
+        <div id="loading-state" class="state-line" role="status">carregando workspaces...</div>
+        <div id="error-state" class="state-line state-error" role="alert" hidden></div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <p class="empty-title">Nenhum workspace salvo</p>
+          <p class="empty-copy">Adicione uma pasta local e escolha o runtime para começar.</p>
+          <button class="button button-secondary" type="button" data-open-workspace-modal>
+            <span aria-hidden="true">+</span>
+            novo workspace
+          </button>
+        </div>
+
+        <div id="workspace-grid" class="workspace-grid" aria-live="polite"></div>
       </section>
     </main>
+
+    <div id="workspace-modal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="workspace-modal-title">
+        <div class="modal-header">
+          <h2 id="workspace-modal-title">Novo workspace</h2>
+          <button id="close-workspace-modal" class="icon-button" type="button" aria-label="Fechar">x</button>
+        </div>
+
+        <form id="workspace-form" class="workspace-form">
+          <label class="field">
+            <span>Path da pasta</span>
+            <input id="workspace-path" name="path" type="text" autocomplete="off" placeholder="C:\projetos\meu-projeto" required>
+          </label>
+
+          <fieldset class="field">
+            <legend>Runtime</legend>
+            <div class="segmented-control" role="radiogroup" aria-label="Runtime do workspace">
+              <label>
+                <input type="radio" name="runtime" value="codex" checked>
+                <span class="segment-label badge-codex">CODEX</span>
+              </label>
+              <label>
+                <input type="radio" name="runtime" value="claude">
+                <span class="segment-label badge-claude">CLAUDE CODE</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+
+          <div class="modal-actions">
+            <button class="button button-ghost" type="button" data-close-workspace-modal>cancelar</button>
+            <button id="create-workspace-button" class="button button-primary" type="submit">criar</button>
+          </div>
+        </form>
+      </section>
+    </div>
 
     <script src="./app.js"></script>
   </body>
