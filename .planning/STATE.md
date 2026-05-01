@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 5
 - **Name:** Main Workspace UI and Runtime Switching
-- **Status:** context_gathered
-- **Next command:** `$gsd-plan-phase 5`
+- **Status:** ready_to_execute
+- **Next command:** `$gsd-execute-phase 5`
 
 ## Completed
 
@@ -33,6 +33,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 4 planned.
 - Phase 4 executed and verified.
 - Phase 5 context gathered.
+- Phase 5 planned.
 
 ## Open Decisions
 
@@ -47,11 +48,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 preserves existing `brain.json`, `CLAUDE.md`, and `AGENTS.md`.
 - Phase 3 exposes minimal workspace IPC without building the full Home UI.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
+- Phase 5 implements stop-before-runtime-switch as a named UI lifecycle hook/local pane reset; real child-process termination is wired in later orchestration/hardening phases.
 
 ## Last Session
 
-- **Stopped at:** Phase 5 context gathered
-- **Resume file:** `.planning/phases/05-main-workspace-ui-and-runtime-switching/05-CONTEXT.md`
+- **Stopped at:** Phase 5 planned
+- **Resume file:** `.planning/phases/05-main-workspace-ui-and-runtime-switching/05-03-PLAN.md`
 
 ## Quick Tasks Completed
 

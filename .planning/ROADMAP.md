@@ -134,12 +134,33 @@
 
 **Requirements:** WRK-05, RUN-04, RUN-05, RUN-08, TRM-01, TRM-03, UI-03
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 05-01 | 1 | Workspace route and cockpit shell | Planned |
+| 05-02 | 2 | Runtime controls and pane lifecycle state | Planned |
+| 05-03 | 3 | Workspace UI smoke and phase verification | Planned |
+
+**Wave dependency notes:**
+- Wave 1 builds the route and static cockpit shell.
+- Wave 2 is blocked on Wave 1 because runtime controls update cockpit state and pane indicators.
+- Wave 3 is blocked on Waves 1 and 2 because it verifies the complete Phase 5 UI contract.
+
+**Cross-cutting constraints:**
+- Renderer remains browser-only and uses `window.swarm.workspaces.*`.
+- Phase 5 creates UI/lifecycle hooks only; real agent spawning, xterm attachment, file watcher feed, launch overlay, and TTS lifecycle remain deferred.
+- Runtime switch must call the stop-active-processes hook before persisting the new runtime.
+- Feed messages must describe real local UI/config events, not simulated agent work.
+
 **Success criteria:**
 1. Main screen contains workspace tabs, terminal panes, mission bar, feed, map/files area, and node panel.
 2. Runtime dropdown updates workspace config.
 3. Model dropdown changes options based on selected runtime.
 4. Runtime switch stops active processes before applying the new runtime.
 5. Panes show runtime indicators.
+
+**Status:** Planned on 2026-05-01.
 
 ### Phase 6: Swarm Launch and Live Orchestration
 
