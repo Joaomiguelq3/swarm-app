@@ -5,15 +5,14 @@
 See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** One developer can launch and supervise multiple independent AI coding tasks in parallel, with clear runtime choice, live terminal visibility, file-change awareness, and graceful process control.
-**Current focus:** Phase 1 - Project Skeleton and Electron Foundation
+**Current focus:** Phase 2 - Runtime, Scout, Sentinel, TTS, and Terminal Core
 
 ## Current Phase
 
-- **Phase:** 1
-- **Name:** Project Skeleton and Electron Foundation
-- **Status:** complete
-- **Plans:** 1
-- **Next command:** `$gsd-discuss-phase 2`
+- **Phase:** 2
+- **Name:** Runtime, Scout, Sentinel, TTS, and Terminal Core
+- **Status:** context_gathered
+- **Next command:** `$gsd-plan-phase 2`
 
 ## Completed
 
@@ -23,6 +22,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 1 context gathered.
 - Phase 1 planned.
 - Phase 1 executed and verified.
+- Phase 2 context gathered.
 - Research summary created.
 
 ## Open Decisions
@@ -30,12 +30,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 1 will include dependency setup and a working `npm start`.
 - Phase 1 will use raw Electron scripts, not Forge or builder.
 - Phase 1 will open `renderer/home.html` and create `renderer/workspace.html` as a placeholder.
+- Phase 2 will install/prove `node-pty` with a PowerShell smoke test.
+- Phase 2 will create runtime config only, not real Claude/Codex agent spawning.
+- Phase 2 will keep scout, sentinel, and TTS independently testable modules.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
 
 ## Last Session
 
-- **Stopped at:** Phase 1 complete
-- **Resume file:** `.planning/phases/01-project-skeleton-and-electron-foundation/01-VERIFICATION.md`
+- **Stopped at:** Phase 2 context gathered
+- **Resume file:** `.planning/phases/02-runtime-scout-sentinel-tts-and-terminal-core/02-CONTEXT.md`
 
 ## Quick Tasks Completed
 
