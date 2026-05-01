@@ -11,8 +11,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 3
 - **Name:** Workspace Persistence and Rules Generation
-- **Status:** context_gathered
-- **Next command:** `$gsd-plan-phase 3`
+- **Status:** ready_to_execute
+- **Plans:** 3
+- **Next command:** `$gsd-execute-phase 3`
 
 ## Completed
 
@@ -27,6 +28,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 2 executed and verified.
 - Phase 3 context gathered.
 - Research summary created.
+- Phase 3 planned.
 
 ## Open Decisions
 
@@ -44,8 +46,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 3 context gathered
-- **Resume file:** `.planning/phases/03-workspace-persistence-and-rules-generation/03-CONTEXT.md`
+- **Stopped at:** Phase 3 planned
+- **Resume file:** `.planning/phases/03-workspace-persistence-and-rules-generation/03-01-PLAN.md`
 
 ## Quick Tasks Completed
 

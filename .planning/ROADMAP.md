@@ -68,6 +68,24 @@
 
 **Requirements:** WRK-01, WRK-02, WRK-03, RUN-03, PRS-01
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 03-01 | 1 | Workspace persistence core | Ready |
+| 03-02 | 2 | Workspace IPC bridge | Ready |
+| 03-03 | 3 | Phase 3 aggregate verification | Ready |
+
+**Wave dependency notes:**
+- Wave 1 builds the core module and prepares npm scripts.
+- Wave 2 is blocked on Wave 1 because IPC delegates to `src/workspaces.js`.
+- Wave 3 is blocked on Waves 1 and 2 because it runs aggregate verification.
+
+**Cross-cutting constraints:**
+- Existing `brain.json`, `CLAUDE.md`, and `AGENTS.md` must never be overwritten.
+- Full Home UI, runtime process lifecycle, terminal panes, and real agent spawning stay out of Phase 3.
+- Renderer access must stay behind explicit preload methods.
+
 **Success criteria:**
 1. Workspaces are saved and loaded from the app data location.
 2. Workspace records include id, name, path, runtime, model, and lastAccess.
