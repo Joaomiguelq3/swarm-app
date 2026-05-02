@@ -1,6 +1,6 @@
 {
   "name": "avant-ia",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AVANT IA desktop multi-agent orchestrator",
   "private": true,
   "author": "AVANT IA",
@@ -9,9 +9,11 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win nsis",
-    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/runtime-auth.js && node --check src/runtime-auth-ipc.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check src/workspaces.js && node --check src/workspace-ipc.js && node --check src/swarm.js && node --check src/swarm-ipc.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-runtime-auth.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node --check scripts/smoke-workspaces.js && node --check scripts/smoke-workspace-ipc.js && node --check scripts/smoke-phase3.js && node --check scripts/smoke-home-ui.js && node --check scripts/smoke-phase4.js && node --check scripts/smoke-workspace-ui.js && node --check scripts/smoke-phase5.js && node --check scripts/smoke-swarm-core.js && node --check scripts/smoke-swarm-ipc.js && node --check scripts/smoke-workspace-orchestration.js && node --check scripts/smoke-launch-overlay.js && node --check scripts/smoke-phase6.js && node --check scripts/smoke-shutdown-lifecycle.js && node --check scripts/smoke-stop-ui.js && node --check scripts/smoke-phase7.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
+    "release": "electron-builder --win nsis --publish always",
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js && node --check src/runtimes.js && node --check src/runtime-auth.js && node --check src/runtime-auth-ipc.js && node --check src/auto-updater.js && node --check src/scout.js && node --check src/sentinel.js && node --check src/tts.js && node --check src/workspaces.js && node --check src/workspace-ipc.js && node --check src/swarm.js && node --check src/swarm-ipc.js && node --check scripts/check-runtimes.js && node --check scripts/smoke-runtime-auth.js && node --check scripts/smoke-auto-update.js && node --check scripts/smoke-scout.js && node --check scripts/smoke-sentinel.js && node --check scripts/smoke-tts.js && node --check scripts/smoke-pty.js && node --check scripts/smoke-workspaces.js && node --check scripts/smoke-workspace-ipc.js && node --check scripts/smoke-phase3.js && node --check scripts/smoke-home-ui.js && node --check scripts/smoke-phase4.js && node --check scripts/smoke-workspace-ui.js && node --check scripts/smoke-phase5.js && node --check scripts/smoke-swarm-core.js && node --check scripts/smoke-swarm-ipc.js && node --check scripts/smoke-workspace-orchestration.js && node --check scripts/smoke-launch-overlay.js && node --check scripts/smoke-phase6.js && node --check scripts/smoke-shutdown-lifecycle.js && node --check scripts/smoke-stop-ui.js && node --check scripts/smoke-phase7.js && node -e \"JSON.parse(require('fs').readFileSync('brain.json', 'utf8')); console.log('check ok')\"",
     "check:runtimes": "node scripts/check-runtimes.js",
     "smoke:runtime-auth": "node scripts/smoke-runtime-auth.js",
+    "smoke:auto-update": "node scripts/smoke-auto-update.js",
     "smoke:scout": "node scripts/smoke-scout.js",
     "smoke:sentinel": "node scripts/smoke-sentinel.js",
     "smoke:tts": "node scripts/smoke-tts.js",
@@ -40,6 +42,7 @@
   },
   "dependencies": {
     "chokidar": "^5.0.0",
+    "electron-updater": "^6.8.3",
     "node-pty": "^1.1.0"
   },
   "build": {
@@ -63,6 +66,14 @@
       "package.json",
       "node_modules/**/*"
     ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Joaomiguelq3",
+        "repo": "swarm-app",
+        "releaseType": "release"
+      }
+    ],
     "win": {
       "icon": "assets/app-icon.ico",
       "signAndEditExecutable": false,
@@ -85,5 +96,3 @@
     }
   }
 }
-
-

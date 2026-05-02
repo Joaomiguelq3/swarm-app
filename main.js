@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, nativeImage } = require('electron');
 const path = require('path');
+const { registerAutoUpdater } = require('./src/auto-updater');
 const { registerRuntimeAuthIpc } = require('./src/runtime-auth-ipc');
 const { registerWorkspaceIpc } = require('./src/workspace-ipc');
 const { registerSwarmIpc } = require('./src/swarm-ipc');
@@ -81,6 +82,7 @@ ipcMain.handle('swarm:dialog:select-directory', async () => {
 
 registerWorkspaceIpc({ ipcMain, app });
 registerRuntimeAuthIpc({ ipcMain });
+registerAutoUpdater({ ipcMain, app, getWindow: () => mainWindow });
 swarmIpc = registerSwarmIpc({ ipcMain, getWindow: () => mainWindow });
 
 app.whenReady().then(() => {

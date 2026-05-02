@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 const ORCHESTRATION_EVENT = 'swarm:orchestration:event';
+const UPDATE_EVENT = 'avant:update:event';
 
 contextBridge.exposeInMainWorld('swarm', {
   getAppInfo: () => ipcRenderer.invoke('swarm:get-app-info'),
@@ -24,6 +25,18 @@ contextBridge.exposeInMainWorld('swarm', {
   },
   loginRuntime: (runtime) => ipcRenderer.invoke('swarm:runtimes:login', runtime),
   checkRuntime: (runtime) => ipcRenderer.invoke('swarm:runtimes:check', runtime),
+  updates: {
+    check: () => ipcRenderer.invoke('avant:update:check'),
+    install: () => ipcRenderer.invoke('avant:update:install'),
+    onEvent: (callback) => {
+      if (typeof callback !== 'function') {
+        return () => {};
+      }
+      const listener = (_event, payload) => callback(payload);
+      ipcRenderer.on(UPDATE_EVENT, listener);
+      return () => ipcRenderer.off(UPDATE_EVENT, listener);
+    }
+  },
   orchestration: {
     launch: (input) => ipcRenderer.invoke('swarm:orchestration:launch', input),
     stop: (reason) => ipcRenderer.invoke('swarm:orchestration:stop', reason),

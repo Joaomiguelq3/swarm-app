@@ -29,6 +29,7 @@ const state = {
   runtimeStatus: null,
   runtimeStatusLoading: false,
   swarmUnsubscribe: null,
+  updateUnsubscribe: null,
   overlayTimer: null
 };
 
@@ -490,7 +491,9 @@ function initHome() {
   initTypingLogo();
   initMatrixCanvas();
   bindModalEvents();
+  subscribeToUpdates();
   initBridgeStatus();
+  checkForUpdates(false);
   loadWorkspaces();
 }
 
@@ -498,6 +501,8 @@ async function initWorkspace() {
   showWorkspaceLoading();
   bindWorkspaceEvents();
   subscribeToOrchestration();
+  subscribeToUpdates();
+  checkForUpdates(false);
   await loadRuntimeCatalog();
 
   if (!hasWorkspaceBridge('list')) {
@@ -616,6 +621,83 @@ function subscribeToOrchestration() {
   }
 
   state.swarmUnsubscribe = window.swarm.orchestration.onEvent(handleSwarmEvent);
+}
+
+function hasUpdateBridge(method) {
+  return Boolean(
+    window.swarm &&
+    window.swarm.updates &&
+    typeof window.swarm.updates[method] === 'function'
+  );
+}
+
+function subscribeToUpdates() {
+  if (state.updateUnsubscribe) {
+    state.updateUnsubscribe();
+    state.updateUnsubscribe = null;
+  }
+
+  if (!hasUpdateBridge('onEvent')) {
+    return;
+  }
+
+  state.updateUnsubscribe = window.swarm.updates.onEvent(handleUpdateEvent);
+}
+
+async function checkForUpdates(reportSkipped) {
+  if (!hasUpdateBridge('check')) {
+    return;
+  }
+
+  try {
+    const result = await window.swarm.updates.check();
+    if (result && result.skipped && reportSkipped) {
+      addFeedEvent('runtime', result.message);
+    }
+  } catch (error) {
+    addFeedEvent('error', error.message || 'erro ao verificar atualizacao');
+  }
+}
+
+async function installDownloadedUpdate() {
+  if (!hasUpdateBridge('install')) {
+    return;
+  }
+
+  try {
+    await window.swarm.updates.install();
+  } catch (error) {
+    addFeedEvent('error', error.message || 'erro ao instalar atualizacao');
+  }
+}
+
+function handleUpdateEvent(event = {}) {
+  if (event.type === 'checking') {
+    addFeedEvent('runtime', 'verificando atualizacoes do AVANT IA');
+    return;
+  }
+  if (event.type === 'available') {
+    addFeedEvent('runtime', `atualizacao disponivel: ${event.version}`);
+    return;
+  }
+  if (event.type === 'not-available') {
+    addFeedEvent('runtime', 'AVANT IA ja esta atualizado');
+    return;
+  }
+  if (event.type === 'download-progress') {
+    addFeedEvent('runtime', `baixando atualizacao: ${event.percent}%`);
+    return;
+  }
+  if (event.type === 'downloaded') {
+    addFeedEvent('runtime', `atualizacao ${event.version} baixada`);
+    if (window.confirm('Atualizacao do AVANT IA baixada. Reiniciar e instalar agora?')) {
+      installDownloadedUpdate();
+    }
+    return;
+  }
+  if (event.type === 'error') {
+    addFeedEvent('error', event.message || 'erro no auto-update');
+  }
 }
 
 function renderWorkspace() {
