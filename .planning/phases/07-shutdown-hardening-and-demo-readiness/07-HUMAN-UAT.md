@@ -1,17 +1,17 @@
 ---
-status: partial
+status: ready
 phase: 7-shutdown-hardening-and-demo-readiness
 source:
   - 07-VERIFICATION.md
 started: 2026-05-01
-updated: 2026-05-01
+updated: 2026-05-02
 ---
 
 # Phase 7 Human UAT
 
 ## Current Test
 
-Waiting for `claude` and `codex` to be available on PATH.
+`npm.cmd run demo:preflight` passed outside the sandbox on 2026-05-02. Manual Claude Code and Codex app rehearsal is ready.
 
 ## Tests
 
@@ -32,9 +32,8 @@ passed: 0
 issues: 0
 pending: 2
 skipped: 0
-blocked: 2
+blocked: 0
 
 ## Gaps
 
-- `claude` not found on PATH during `npm.cmd run demo:preflight`.
-- `codex` not found on PATH during `npm.cmd run demo:preflight`.
+- Manual app rehearsal still needs to be performed and recorded.

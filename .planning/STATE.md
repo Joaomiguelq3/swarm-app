@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 7
 - **Name:** Shutdown, Hardening, and Demo Readiness
-- **Status:** human_verification_required
-- **Next command:** `npm.cmd run demo:preflight`
+- **Status:** demo_rehearsal_required
+- **Next command:** `npm.cmd start`
 
 ## Completed
 
@@ -59,11 +59,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 6 will use deterministic local mission decomposition first; external AI decomposition is deferred.
 - Phase 6 automated verification uses a fake/test runtime and does not require real Claude Code or Codex binaries.
 - Phase 7 will rehearse real Claude Code and Codex demo runs and harden close/stop behavior.
-- Phase 7 automated hardening is complete. Real Claude Code and Codex rehearsal is blocked until `claude` and `codex` are available on PATH.
+- Phase 7 automated hardening is complete. `npm.cmd run demo:preflight` passed outside the sandbox on 2026-05-02 with Claude Code 2.1.126 and Codex CLI 0.128.0.
 
 ## Last Session
 
-- **Stopped at:** Phase 7 automated hardening complete; manual demo preflight blocked
+- **Stopped at:** Phase 7 automated hardening complete; `npm.cmd run demo:preflight` passed outside the sandbox on 2026-05-02; next step is manual app rehearsal from `docs/demo-runbook.md`
 - **Resume file:** `docs/demo-runbook.md`
 
 ## Quick Tasks Completed

@@ -1,27 +1,63 @@
 const { spawnSync } = require('child_process');
 const { RUNTIMES } = require('../src/runtimes');
 
-function runVersion(runtime) {
-  const result = spawnSync(runtime.cmd, ['--version'], {
+function getCommandCandidates(runtime) {
+  const candidates = [runtime.cmd];
+  if (process.platform === 'win32') {
+    const base = runtime.cmd.replace(/\.cmd$/i, '');
+    candidates.push(`${base}.cmd`);
+    candidates.push(base);
+  }
+  return [...new Set(candidates)];
+}
+
+function spawnCommand(command, args) {
+  const isWindowsCmd = process.platform === 'win32' && /\.cmd$/i.test(command);
+  const executable = isWindowsCmd ? 'cmd.exe' : command;
+  const commandArgs = isWindowsCmd ? ['/d', '/s', '/c', command, ...args] : args;
+
+  return spawnSync(executable, commandArgs, {
     cwd: process.cwd(),
     encoding: 'utf8',
     shell: false,
     windowsHide: true
   });
+}
 
-  if (result.error) {
+function runVersion(runtime) {
+  const errors = [];
+
+  for (const command of getCommandCandidates(runtime)) {
+    const result = spawnCommand(command, ['--version']);
+
+    if (result.error) {
+      errors.push(`${command}: ${result.error.code || result.error.message}`);
+      continue;
+    }
+
+    const output = `${result.stdout || ''}${result.stderr || ''}`.trim();
+    if (result.status === 0) {
+      return {
+        ok: true,
+        output: output || `${command} --version ok`
+      };
+    }
+
+    errors.push(`${command}: ${output || `exited with ${result.status}`}`);
+  }
+
+  if (errors.length === 0) {
     return {
       ok: false,
-      output: result.error.code === 'ENOENT'
-        ? `${runtime.cmd} not found on PATH`
-        : result.error.message
+      output: `${runtime.cmd} not found on PATH`
     };
   }
 
-  const output = `${result.stdout || ''}${result.stderr || ''}`.trim();
   return {
-    ok: result.status === 0,
-    output: output || `${runtime.cmd} exited with ${result.status}`
+    ok: false,
+    output: errors.every((error) => error.includes('ENOENT'))
+      ? `${runtime.cmd} not found on PATH`
+      : errors.join('; ')
   };
 }
 

@@ -35,7 +35,7 @@ One developer can launch and supervise multiple independent AI coding tasks in p
 - [x] SWARM kills child processes gracefully when closing the app.
 - [x] SWARM provides main workspace runtime controls.
 - [x] SWARM provides launch animation.
-- [ ] Real Claude Code and Codex demo runs are rehearsed end to end. Blocked locally until `claude` and `codex` are available on PATH.
+- [ ] Real Claude Code and Codex demo runs are rehearsed end to end. Runtime preflight passed locally on 2026-05-02; manual app rehearsal remains pending.
 
 ### Out of Scope
 
@@ -75,7 +75,7 @@ The home screen stores and displays workspaces, including colored runtime badges
 | Runtime is selected per workspace | Different projects may work better with Claude Code or Codex | Validated through Phase 3 persistence and Phase 4 Home display |
 | Runtime config lives in `src/runtimes.js` | Keeps orchestration agnostic and avoids hard-coded branching | Validated in Phase 2 and reused in Phase 4 UI styling |
 | JavaScript puro instead of TypeScript | Explicit PRD constraint and faster prototype path | Pending |
-| Use node-pty for embedded terminals | Agents must run in real terminal processes | Spawn/output path verified in Phase 6 and stop/cleanup path verified in Phase 7 with fake-runtime automation; real demo rehearsal pending local CLI availability |
+| Use node-pty for embedded terminals | Agents must run in real terminal processes | Spawn/output path verified in Phase 6 and stop/cleanup path verified in Phase 7 with fake-runtime automation; real-runtime preflight passed on 2026-05-02 |
 | Keep both `CLAUDE.md` and `AGENTS.md` when switching runtimes | Preserves compatibility and avoids deleting user rules | Validated in Phase 3 |
 | Use PowerShell SpeechSynthesizer for TTS | Windows-native, zero external API dependency | Lifecycle calls verified in Phase 6; audible demo rehearsal pending local demo |
 | Use local persistence in `%APPDATA%\swarm\workspaces.json` | Simple desktop persistence with no backend | Validated in Phase 3 |

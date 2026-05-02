@@ -237,8 +237,8 @@
 4. Codex demo flow runs once end to end.
 5. Errors are visible in pane/feed without crashing Electron.
 
-**Status:** Automated hardening complete on 2026-05-01. Real Claude Code and Codex demo rehearsal is blocked until `claude` and `codex` are available on PATH.
+**Status:** Automated hardening complete on 2026-05-01. Real-runtime preflight passed on 2026-05-02; Claude Code and Codex demo rehearsal remains pending.
 
 ## Next Step
 
-Run `npm.cmd run demo:preflight` after installing/configuring Claude Code and Codex, then follow `docs/demo-runbook.md` for manual rehearsal.
+Follow `docs/demo-runbook.md` for manual Claude Code and Codex rehearsal.

@@ -1,7 +1,7 @@
 ---
 status: human_needed
 phase: 7-shutdown-hardening-and-demo-readiness
-updated: 2026-05-01
+updated: 2026-05-02
 ---
 
 # Phase 7 Verification
@@ -15,14 +15,14 @@ updated: 2026-05-01
 
 ## Demo Preflight
 
-- `npm.cmd run demo:preflight` - failed
+- `npm.cmd run demo:preflight` - passed outside the sandbox on 2026-05-02
 
 Result:
 
-- `CLAUDE CODE`: `claude not found on PATH`
-- `CODEX`: `codex not found on PATH`
+- `CLAUDE CODE`: `2.1.126 (Claude Code)`
+- `CODEX`: `codex-cli 0.128.0`
 
-This does not invalidate automated hardening. It blocks real Claude Code and Codex demo rehearsal until the CLIs are installed/configured in the terminal environment.
+This confirms the local terminal environment can invoke both real runtimes for manual demo rehearsal.
 
 ## Coverage
 
@@ -32,7 +32,7 @@ This does not invalidate automated hardening. It blocks real Claude Code and Cod
 
 ## Human Verification Required
 
-Follow `docs/demo-runbook.md` after `npm.cmd run demo:preflight` passes:
+Follow `docs/demo-runbook.md`:
 
 1. Run the Claude Code demo mission.
 2. Run the Codex demo mission.
@@ -40,4 +40,4 @@ Follow `docs/demo-runbook.md` after `npm.cmd run demo:preflight` passes:
 
 ## Verdict
 
-Automated hardening passed. Manual real-runtime demo rehearsal is pending local CLI availability.
+Automated hardening passed. Runtime preflight passed. Manual real-runtime demo rehearsal is pending.
