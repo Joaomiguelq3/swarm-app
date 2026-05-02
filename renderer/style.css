@@ -156,7 +156,8 @@ h1 {
 }
 
 .update-status.update-checking,
-.update-status.update-downloading {
+.update-status.update-downloading,
+.update-status.update-installing {
   border-color: rgba(255, 170, 0, 0.46);
   background: rgba(255, 170, 0, 0.1);
   color: var(--yellow);
@@ -187,7 +188,8 @@ h1 {
 }
 
 .update-checking .update-dot,
-.update-downloading .update-dot {
+.update-downloading .update-dot,
+.update-installing .update-dot {
   background: var(--yellow);
   box-shadow: 0 0 10px rgba(255, 170, 0, 0.28);
 }

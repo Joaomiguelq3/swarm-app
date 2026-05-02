@@ -5,6 +5,13 @@ const { autoUpdater } = require('electron-updater');
 let updateReady = false;
 let updateAvailable = false;
 let downloading = false;
+let installing = false;
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function sendUpdateEvent(getWindow, type, payload = {}) {
   const window = typeof getWindow === 'function' ? getWindow() : null;
@@ -19,7 +26,7 @@ function sendUpdateEvent(getWindow, type, payload = {}) {
   });
 }
 
-function registerAutoUpdater({ ipcMain, app, getWindow }) {
+function registerAutoUpdater({ ipcMain, app, getWindow, onBeforeInstall }) {
   if (!ipcMain || typeof ipcMain.handle !== 'function') {
     throw new Error('ipcMain with handle() is required');
   }
@@ -65,6 +72,8 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
   });
 
   autoUpdater.on('error', (error) => {
+    installing = false;
+    downloading = false;
     sendUpdateEvent(getWindow, 'error', {
       message: error.message
     });
@@ -87,8 +96,24 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
   });
 
   ipcMain.handle('avant:update:install', async () => {
+    if (installing) {
+      return {
+        ok: true,
+        action: 'installing',
+        message: 'Instalacao da atualizacao ja foi iniciada.'
+      };
+    }
+
     if (updateReady) {
-      autoUpdater.quitAndInstall(false, true);
+      installing = true;
+      sendUpdateEvent(getWindow, 'installing', {
+        message: 'Instalando atualizacao. O AVANT IA vai fechar e abrir o instalador.'
+      });
+      await delay(900);
+      if (typeof onBeforeInstall === 'function') {
+        onBeforeInstall();
+      }
+      autoUpdater.quitAndInstall(false, false);
       return { ok: true, action: 'installing' };
     }
 

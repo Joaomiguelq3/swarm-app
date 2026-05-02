@@ -268,7 +268,8 @@ function renderUpdateStatus() {
     'update-checking',
     'update-downloading',
     'update-ready',
-    'update-error'
+    'update-error',
+    'update-installing'
   );
   button.classList.add(`update-${status.kind || 'current'}`);
   label.textContent = status.label || 'atualizado';
@@ -849,7 +850,14 @@ async function installDownloadedUpdate() {
 
   try {
     setUpdateStatus('downloading', 'atualizando...', 'wait');
-    await window.swarm.updates.install();
+    const result = await window.swarm.updates.install();
+    if (result && result.action === 'installing') {
+      setUpdateStatus('installing', 'instalando...', 'wait');
+      addFeedEvent('runtime', result.message || 'instalando atualizacao');
+    }
+    if (result && result.action === 'downloading') {
+      setUpdateStatus('downloading', 'baixando...', 'wait');
+    }
   } catch (error) {
     setUpdateStatus('error', 'desatualizado', 'retry');
     addFeedEvent('error', error.message || 'erro ao instalar atualizacao');
@@ -878,9 +886,14 @@ function handleUpdateEvent(event = {}) {
     return;
   }
   if (event.type === 'downloaded') {
-    setUpdateStatus('ready', 'desatualizado', 'install');
+    setUpdateStatus('ready', 'instalar', 'install');
     addFeedEvent('runtime', `atualizacao ${event.version} baixada`);
-    addFeedEvent('runtime', 'clique em desatualizado para reiniciar e instalar');
+    addFeedEvent('runtime', 'clique em instalar para fechar e aplicar a atualizacao');
+    return;
+  }
+  if (event.type === 'installing') {
+    setUpdateStatus('installing', 'instalando...', 'wait');
+    addFeedEvent('runtime', event.message || 'instalando atualizacao');
     return;
   }
   if (event.type === 'error') {

@@ -8,6 +8,7 @@ const { registerSwarmIpc } = require('./src/swarm-ipc');
 let mainWindow = null;
 let swarmIpc = null;
 let cleanupStarted = false;
+let installingUpdate = false;
 const appIconPath = path.join(__dirname, 'assets', 'app-icon.png');
 const appIconIcoPath = path.join(__dirname, 'assets', 'app-icon.ico');
 
@@ -21,7 +22,7 @@ function getAppIcon() {
 }
 
 function stopSwarmFor(reason) {
-  if (!swarmIpc || cleanupStarted) {
+  if (!swarmIpc || cleanupStarted || installingUpdate) {
     return;
   }
   cleanupStarted = true;
@@ -84,7 +85,14 @@ ipcMain.handle('swarm:dialog:select-directory', async () => {
 
 registerWorkspaceIpc({ ipcMain, app });
 registerRuntimeAuthIpc({ ipcMain });
-registerAutoUpdater({ ipcMain, app, getWindow: () => mainWindow });
+registerAutoUpdater({
+  ipcMain,
+  app,
+  getWindow: () => mainWindow,
+  onBeforeInstall: () => {
+    installingUpdate = true;
+  }
+});
 swarmIpc = registerSwarmIpc({ ipcMain, getWindow: () => mainWindow });
 
 app.whenReady().then(() => {

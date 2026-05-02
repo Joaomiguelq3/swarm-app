@@ -9,6 +9,8 @@ const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 assert(main.includes("require('./src/auto-updater')"), 'main must register auto-updater');
 assert(main.includes('registerAutoUpdater'), 'auto-updater registration missing');
+assert(main.includes('installingUpdate'), 'main must track update install shutdown');
+assert(main.includes('onBeforeInstall'), 'auto updater must mark install shutdown');
 assert(preload.includes('avant:update:check'), 'update check bridge missing');
 assert(preload.includes('avant:update:install'), 'update install bridge missing');
 assert(preload.includes('avant:update:event'), 'update event bridge missing');
@@ -16,6 +18,9 @@ assert(renderer.includes('subscribeToUpdates'), 'renderer update subscription mi
 assert(renderer.includes('checkForUpdates'), 'renderer update check missing');
 assert(updater.includes('autoUpdater.checkForUpdates'), 'auto updater must check releases');
 assert(updater.includes('autoUpdater.quitAndInstall'), 'auto updater must install downloaded update');
+assert(updater.includes("sendUpdateEvent(getWindow, 'installing'"), 'installing event missing');
+assert(updater.includes('await delay(900)'), 'install should give renderer time to paint');
+assert(renderer.includes("event.type === 'installing'"), 'renderer installing event handling missing');
 assert.deepStrictEqual(pkg.build.publish[0], {
   provider: 'github',
   owner: 'Joaomiguelq3',
