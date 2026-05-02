@@ -1,9 +1,9 @@
 {
-  "name": "swarm-app",
+  "name": "avant-ia",
   "version": "0.1.0",
-  "description": "SWARM desktop multi-agent orchestrator",
+  "description": "AVANT IA desktop multi-agent orchestrator",
   "private": true,
-  "author": "SWARM",
+  "author": "AVANT IA",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -43,9 +43,9 @@
     "node-pty": "^1.1.0"
   },
   "build": {
-    "appId": "com.swarm.desktop",
-    "productName": "SWARM",
-    "copyright": "Copyright © 2026 SWARM",
+    "appId": "com.avantia.desktop",
+    "productName": "AVANT IA",
+    "copyright": "Copyright 2026 AVANT IA",
     "asar": true,
     "npmRebuild": false,
     "directories": {
@@ -81,7 +81,9 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "SWARM"
+      "shortcutName": "AVANT IA"
     }
   }
 }
+
+

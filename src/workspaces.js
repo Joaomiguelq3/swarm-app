@@ -296,7 +296,7 @@ function readRulesTemplate(rulesFile) {
     return content.endsWith('\n') ? content : `${content}\n`;
   }
 
-  return `# ${rulesFile} - Regras do Projeto SWARM\n\n- JavaScript puro, sem TypeScript.\n- Credenciais sempre em .env e nunca commitadas.\n`;
+  return `# ${rulesFile} - Regras do Projeto AVANT IA\n\n- JavaScript puro, sem TypeScript.\n- Credenciais sempre em .env e nunca commitadas.\n`;
 }
 
 module.exports = {

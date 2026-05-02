@@ -9,8 +9,8 @@ let swarmIpc = null;
 let cleanupStarted = false;
 const appIconPath = path.join(__dirname, 'assets', 'app-icon.png');
 
-app.setName('SWARM');
-app.setAppUserModelId('com.swarm.desktop');
+app.setName('AVANT IA');
+app.setAppUserModelId('com.avantia.desktop');
 
 function getAppIcon() {
   const icon = nativeImage.createFromPath(appIconPath);
@@ -23,7 +23,7 @@ function stopSwarmFor(reason) {
   }
   cleanupStarted = true;
   Promise.resolve(swarmIpc.stop(reason)).catch((error) => {
-    console.error(`SWARM cleanup failed during ${reason}: ${error.message}`);
+    console.error(`AVANT IA cleanup failed during ${reason}: ${error.message}`);
   });
 }
 
@@ -61,7 +61,7 @@ function createWindow() {
 }
 
 ipcMain.handle('swarm:get-app-info', () => ({
-  name: 'SWARM',
+  name: 'AVANT IA',
   runtime: 'electron',
   status: 'foundation-ready'
 }));

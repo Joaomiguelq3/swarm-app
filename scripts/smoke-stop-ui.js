@@ -6,7 +6,7 @@ const js = fs.readFileSync('renderer/app.js', 'utf8');
 const css = fs.readFileSync('renderer/style.css', 'utf8');
 
 assert(html.includes('id="stop-swarm-button"'), 'STOP SWARM button missing');
-assert(html.includes('STOP SWARM'), 'STOP SWARM label missing');
+assert(html.includes('STOP AVANT IA'), 'STOP AVANT IA label missing');
 assert(css.includes('.button-danger'), 'danger button style missing');
 assert(css.includes('grid-template-columns: minmax(0, 1fr) 110px auto auto'), 'mission bar stop layout missing');
 assert(js.includes('handleStopSwarm'), 'stop handler missing');

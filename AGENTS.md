@@ -1,4 +1,4 @@
-# AGENTS.md - Regras do Projeto SWARM
+# AGENTS.md - Regras do Projeto AVANT IA
 
 ## SEGURANCA
 

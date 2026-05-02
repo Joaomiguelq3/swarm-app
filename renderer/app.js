@@ -123,7 +123,7 @@ function initTypingLogo() {
     return;
   }
 
-  const word = 'SWARM';
+  const word = 'AVANT IA';
   let index = 0;
   target.textContent = '';
 
@@ -143,7 +143,7 @@ function initMatrixCanvas() {
   }
 
   const context = canvas.getContext('2d');
-  const glyphs = '01{}[]<>/\\$#@SWARM';
+  const glyphs = '01{}[]<>/\\$#@AVANTIA';
   const fontSize = 16;
   let columns = 0;
   let drops = [];
@@ -636,7 +636,7 @@ function renderWorkspace() {
 function renderWorkspaceHeader() {
   const workspace = state.activeWorkspace;
   const runtime = getRuntimeView(workspace.runtime);
-  setText('active-workspace-name', workspace.name || 'workspace');
+  setText('active-workspace-name', workspace.name || 'AVANT IA');
   setText('active-workspace-path', workspace.path || '');
   setText('active-workspace-model', workspace.model || 'default');
 
@@ -1352,7 +1352,7 @@ function setWorkspaceControlsDisabled(disabled) {
   }
   const launchButton = getElement('launch-swarm-button');
   if (launchButton) {
-    launchButton.textContent = disabled ? 'SWARM ATIVO' : 'LAUNCH SWARM';
+    launchButton.textContent = disabled ? 'AVANT IA ATIVO' : 'LAUNCH AVANT IA';
   }
   updateStopButtonState();
 }

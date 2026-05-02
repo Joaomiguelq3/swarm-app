@@ -1,4 +1,4 @@
-# CLAUDE.md - Regras do Projeto SWARM
+# CLAUDE.md - Regras do Projeto AVANT IA
 
 ## SEGURANCA
 

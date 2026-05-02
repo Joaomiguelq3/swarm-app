@@ -99,7 +99,7 @@ async function main() {
   assert(sent.some((item) => item.payload.type === 'agent:exit'), 'agent exit missing');
 
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert(spoken.some((text) => /Swarm iniciado/.test(text)), 'start TTS missing');
+  assert(spoken.some((text) => /AVANT IA iniciado/.test(text)), 'start TTS missing');
   assert(spoken.some((text) => /Missao concluida/.test(text)), 'mission TTS missing');
   assert(stoppedSentinels.length >= 1, 'sentinel cleanup missing');
   console.log('smoke-swarm-ipc ok');

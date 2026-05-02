@@ -152,7 +152,7 @@ function registerSwarmIpc({
       if (event.type === 'mission:start') {
         const label = event.runtime === 'claude' ? 'Claude Code' : event.runtime === 'codex' ? 'Codex' : event.runtime;
         const count = Array.isArray(event.tasks) ? event.tasks.length : 0;
-        speakBestEffort(`Swarm iniciado com ${label}. ${count} agentes em paralelo.`);
+        speakBestEffort(`AVANT IA iniciado com ${label}. ${count} agentes em paralelo.`);
       }
       if (event.type === 'agent:exit' && event.status === 'DONE') {
         speakBestEffort(`Agente ${event.paneId || ''} concluido.`);

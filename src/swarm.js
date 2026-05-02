@@ -182,7 +182,7 @@ function createSwarm(options = {}) {
       model,
       decompositionModel,
       tasks,
-      message: `Swarm iniciado com ${runtime.label || runtime.id || runtimeId}.`
+      message: `AVANT IA iniciado com ${runtime.label || runtime.id || runtimeId}.`
     });
 
     for (const task of tasks) {
@@ -274,7 +274,7 @@ function createSwarm(options = {}) {
         missionId,
         status: STATUS.IDLE,
         reason,
-        message: `Swarm parado: ${reason}.`
+        message: `AVANT IA parado: ${reason}.`
       });
       activeMission = null;
     }
