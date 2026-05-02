@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 7
 - **Name:** Shutdown, Hardening, and Demo Readiness
-- **Status:** ready_to_discuss
-- **Next command:** `$gsd-discuss-phase 7`
+- **Status:** ready_to_plan
+- **Next command:** `$gsd-plan-phase 7`
 
 ## Completed
 
@@ -38,6 +38,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 6 context gathered.
 - Phase 6 planned.
 - Phase 6 executed and verified.
+- Phase 7 context gathered.
 
 ## Open Decisions
 
@@ -59,8 +60,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Last Session
 
-- **Stopped at:** Phase 6 executed and verified
-- **Resume file:** `.planning/ROADMAP.md`
+- **Stopped at:** Phase 7 context gathered
+- **Resume file:** `.planning/phases/07-shutdown-hardening-and-demo-readiness/07-CONTEXT.md`
 
 ## Quick Tasks Completed
 
