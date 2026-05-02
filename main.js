@@ -5,6 +5,17 @@ const { registerSwarmIpc } = require('./src/swarm-ipc');
 
 let mainWindow = null;
 let swarmIpc = null;
+let cleanupStarted = false;
+
+function stopSwarmFor(reason) {
+  if (!swarmIpc || cleanupStarted) {
+    return;
+  }
+  cleanupStarted = true;
+  Promise.resolve(swarmIpc.stop(reason)).catch((error) => {
+    console.error(`SWARM cleanup failed during ${reason}: ${error.message}`);
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -29,6 +40,10 @@ function createWindow() {
     mainWindow = null;
   });
 
+  mainWindow.on('close', () => {
+    stopSwarmFor('window-close');
+  });
+
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'home.html'));
 }
 
@@ -51,10 +66,16 @@ app.whenReady().then(() => {
   });
 });
 
+app.on('before-quit', () => {
+  stopSwarmFor('before-quit');
+});
+
+app.on('will-quit', () => {
+  stopSwarmFor('will-quit');
+});
+
 app.on('window-all-closed', () => {
-  if (swarmIpc) {
-    swarmIpc.stop('app-close');
-  }
+  stopSwarmFor('app-close');
   if (process.platform !== 'darwin') {
     app.quit();
   }

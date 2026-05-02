@@ -496,6 +496,11 @@ function bindWorkspaceEvents() {
   if (launchButton) {
     launchButton.addEventListener('click', handleLaunch);
   }
+
+  const stopButton = getElement('stop-swarm-button');
+  if (stopButton) {
+    stopButton.addEventListener('click', handleStopSwarm);
+  }
 }
 
 function hasOrchestrationBridge(method) {
@@ -530,6 +535,7 @@ function renderWorkspace() {
   renderRuntimeControls();
   renderNodePanel();
   renderFeed();
+  updateStopButtonState();
 }
 
 function renderWorkspaceHeader() {
@@ -746,7 +752,7 @@ function addFeedEvent(type, message) {
   const now = new Date();
   state.feed.unshift({
     type,
-    message,
+    message: sanitizeVisibleText(message),
     time: now.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
       minute: '2-digit',
@@ -830,6 +836,11 @@ async function stopActiveProcesses(reason) {
   addFeedEvent('process', `orquestracao parada: ${reason}`);
   renderPanes();
   renderNodePanel();
+  updateStopButtonState();
+}
+
+async function handleStopSwarm() {
+  await stopActiveProcesses('user-stop');
 }
 
 async function handleLaunch() {
@@ -854,6 +865,7 @@ async function handleLaunch() {
 
   state.launchInProgress = true;
   setWorkspaceControlsDisabled(true);
+  updateStopButtonState();
   addFeedEvent('mission', 'decompondo missao e preparando agentes');
 
   try {
@@ -874,6 +886,7 @@ async function handleLaunch() {
     hideLaunchOverlay();
     addFeedEvent('error', error.message || 'erro ao iniciar swarm');
     setWorkspaceControlsDisabled(false);
+    updateStopButtonState();
   }
 }
 
@@ -890,6 +903,7 @@ function handleSwarmEvent(event) {
     addFeedEvent('mission', event.message || 'swarm iniciado');
     showLaunchOverlay(tasks, event.runtime || state.activeWorkspace?.runtime);
     renderWorkspace();
+    updateStopButtonState();
     return;
   }
 
@@ -920,7 +934,7 @@ function handleSwarmEvent(event) {
   if (event.type === 'agent:error') {
     updatePane(event.paneId, {
       status: 'ERROR',
-      output: [`${event.message || event.error || 'erro no agente'}\n`]
+      output: [`${sanitizeVisibleText(event.message || event.error || 'erro no agente')}\n`]
     });
     addFeedEvent('error', event.message || event.error || 'erro no agente');
     hideLaunchOverlay();
@@ -943,6 +957,7 @@ function handleSwarmEvent(event) {
     addFeedEvent(event.status === 'ERROR' ? 'error' : 'mission', event.message || 'missao concluida');
     setWorkspaceControlsDisabled(false);
     renderNodePanel();
+    updateStopButtonState();
     return;
   }
 
@@ -952,6 +967,7 @@ function handleSwarmEvent(event) {
     hideLaunchOverlay();
     addFeedEvent('error', event.message || 'erro na missao');
     setWorkspaceControlsDisabled(false);
+    updateStopButtonState();
     return;
   }
 
@@ -961,12 +977,26 @@ function handleSwarmEvent(event) {
     hideLaunchOverlay();
     addFeedEvent('process', event.message || 'swarm parado');
     setWorkspaceControlsDisabled(false);
+    updateStopButtonState();
     return;
   }
 
-  if (event.type === 'tts:warning' || event.type === 'file:error') {
+  if (event.type === 'tts:warning' || event.type === 'file:error' || event.type === 'cleanup:warning') {
     addFeedEvent(event.type === 'file:error' ? 'error' : 'process', event.message);
   }
+}
+
+function sanitizeVisibleText(value) {
+  const text = String(value || '');
+  return text
+    .replace(/(api[_-]?key|token|password|secret)(=|:)\S+/gi, '$1=[redacted]')
+    .replace(/OPENAI_API_KEY=\S+/gi, 'OPENAI_API_KEY=[redacted]')
+    .replace(/ANTHROPIC_API_KEY=\S+/gi, 'ANTHROPIC_API_KEY=[redacted]')
+    .slice(0, 360);
+}
+
+function isSwarmActive() {
+  return state.missionActive || state.panes.some((pane) => ['THINKING', 'WRITING'].includes(pane.status));
 }
 
 function createPanesForTasks(tasks) {
@@ -1088,6 +1118,17 @@ function setWorkspaceControlsDisabled(disabled) {
   if (launchButton) {
     launchButton.textContent = disabled ? 'SWARM ATIVO' : 'LAUNCH SWARM';
   }
+  updateStopButtonState();
+}
+
+function updateStopButtonState() {
+  const stopButton = getElement('stop-swarm-button');
+  if (!stopButton) {
+    return;
+  }
+  const active = isSwarmActive();
+  stopButton.disabled = !active;
+  stopButton.setAttribute('aria-disabled', String(!active));
 }
 
 function applyWorkspaceResult(result) {

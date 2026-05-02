@@ -65,7 +65,7 @@
 - [x] **TTS-02**: SWARM announces agent completion and errors.
 - [x] **TTS-03**: SWARM announces mission completion.
 - [x] **PRS-01**: SWARM writes `brain.json` in each project root.
-- [ ] **PRS-02**: SWARM kills child processes gracefully when closing the app.
+- [x] **PRS-02**: SWARM kills child processes gracefully when closing the app.
 
 ## v2 Requirements
 
@@ -114,7 +114,7 @@
 | SWM-04 | Phase 6 | Complete |
 | SWM-05 | Phase 6 | Complete |
 | SWM-06 | Phase 6 | Complete |
-| SWM-07 | Phase 6 | Complete |
+| SWM-07 | Phase 7 | Complete |
 | FIL-01 | Phase 2 | Complete |
 | FIL-02 | Phase 2 | Complete |
 | FIL-03 | Phase 2 | Complete |
@@ -130,7 +130,7 @@
 | TTS-02 | Phase 6 | Complete |
 | TTS-03 | Phase 6 | Complete |
 | PRS-01 | Phase 3 | Complete |
-| PRS-02 | Phase 7 | Pending |
+| PRS-02 | Phase 7 | Complete |
 
 **Coverage:**
 - v1 requirements: 40 total
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after Phase 6 verification*
+*Last updated: 2026-05-01 after Phase 7 automated verification*

@@ -181,6 +181,12 @@ h1 {
   color: var(--text);
 }
 
+.button-danger {
+  border-color: rgba(255, 68, 68, 0.48);
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--red);
+}
+
 .button:hover,
 .icon-button:hover {
   border-color: var(--green);
@@ -827,7 +833,7 @@ dd {
 
 .mission-bar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 110px auto;
+  grid-template-columns: minmax(0, 1fr) 110px auto auto;
   gap: 10px;
   align-items: end;
   min-height: 72px;

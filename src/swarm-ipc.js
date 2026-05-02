@@ -12,14 +12,30 @@ function getWorkspacePath(input = {}) {
   return input.workspacePath || input.path || input.workspace?.path;
 }
 
+function withTimeout(promise, timeoutMs, label) {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          ok: false,
+          warning: `${label} timed out after ${timeoutMs}ms`
+        });
+      }, timeoutMs);
+    })
+  ]);
+}
+
 function registerSwarmIpc({
   ipcMain,
   getWindow,
   createSwarmFactory = createSwarm,
   createSentinelFactory = createSentinel,
-  speakFn = speak
+  speakFn = speak,
+  cleanupTimeoutMs = 2000
 }) {
   let active = null;
+  let stoppingPromise = null;
 
   function send(payload) {
     const window = typeof getWindow === 'function' ? getWindow() : null;
@@ -52,22 +68,64 @@ function registerSwarmIpc({
   }
 
   async function stopActive(reason = 'stop') {
+    if (stoppingPromise) {
+      return stoppingPromise;
+    }
+
     if (!active) {
       return { ok: true, stopped: false };
     }
 
-    const current = active;
-    active = null;
-    if (current.unsubscribe) {
-      current.unsubscribe();
+    stoppingPromise = (async () => {
+      const current = active;
+      active = null;
+      const warnings = [];
+
+      try {
+        if (current.unsubscribe) {
+          current.unsubscribe();
+        }
+      } catch (error) {
+        warnings.push(`unsubscribe: ${error.message}`);
+      }
+
+      if (current.sentinel) {
+        try {
+          const result = await withTimeout(current.sentinel.stop(), cleanupTimeoutMs, 'sentinel cleanup');
+          if (result && result.warning) {
+            warnings.push(result.warning);
+          }
+        } catch (error) {
+          warnings.push(`sentinel: ${error.message}`);
+        }
+      }
+
+      if (current.swarm && reason !== 'mission-complete') {
+        try {
+          current.swarm.stop(reason);
+        } catch (error) {
+          warnings.push(`swarm: ${error.message}`);
+        }
+      }
+
+      for (const warning of warnings) {
+        send({
+          type: 'cleanup:warning',
+          status: 'IDLE',
+          reason,
+          message: `Cleanup: ${warning}`,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      return { ok: true, stopped: true, reason, warnings };
+    })();
+
+    try {
+      return await stoppingPromise;
+    } finally {
+      stoppingPromise = null;
     }
-    if (current.sentinel) {
-      await current.sentinel.stop();
-    }
-    if (current.swarm && reason !== 'mission-complete') {
-      current.swarm.stop(reason);
-    }
-    return { ok: true, stopped: true };
   }
 
   ipcMain.handle(CHANNELS.launch, async (_event, input = {}) => {

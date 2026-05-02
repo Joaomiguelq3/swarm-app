@@ -214,10 +214,10 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 07-01 | 1 | Idempotent shutdown and process cleanup | Planned |
-| 07-02 | 2 | Stop Swarm UI and visible error hardening | Planned |
-| 07-03 | 3 | Demo preflight and runbook | Planned |
-| 07-04 | 4 | Phase 7 aggregate verification and milestone state | Planned |
+| 07-01 | 1 | Idempotent shutdown and process cleanup | Complete |
+| 07-02 | 2 | Stop Swarm UI and visible error hardening | Complete |
+| 07-03 | 3 | Demo preflight and runbook | Complete |
+| 07-04 | 4 | Phase 7 aggregate verification and milestone state | Complete |
 
 **Wave dependency notes:**
 - Wave 1 hardens the core process lifecycle before UI or demo workflows depend on it.
@@ -237,6 +237,8 @@
 4. Codex demo flow runs once end to end.
 5. Errors are visible in pane/feed without crashing Electron.
 
+**Status:** Automated hardening complete on 2026-05-01. Real Claude Code and Codex demo rehearsal is blocked until `claude` and `codex` are available on PATH.
+
 ## Next Step
 
-Run `$gsd-discuss-phase 7` to gather implementation context for Phase 7.
+Run `npm.cmd run demo:preflight` after installing/configuring Claude Code and Codex, then follow `docs/demo-runbook.md` for manual rehearsal.

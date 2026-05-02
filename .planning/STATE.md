@@ -11,8 +11,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - **Phase:** 7
 - **Name:** Shutdown, Hardening, and Demo Readiness
-- **Status:** ready_to_execute
-- **Next command:** `$gsd-execute-phase 7`
+- **Status:** human_verification_required
+- **Next command:** `npm.cmd run demo:preflight`
 
 ## Completed
 
@@ -40,6 +40,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 6 executed and verified.
 - Phase 7 context gathered.
 - Phase 7 planned.
+- Phase 7 automated hardening executed and verified.
 
 ## Open Decisions
 
@@ -58,11 +59,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 6 will use deterministic local mission decomposition first; external AI decomposition is deferred.
 - Phase 6 automated verification uses a fake/test runtime and does not require real Claude Code or Codex binaries.
 - Phase 7 will rehearse real Claude Code and Codex demo runs and harden close/stop behavior.
+- Phase 7 automated hardening is complete. Real Claude Code and Codex rehearsal is blocked until `claude` and `codex` are available on PATH.
 
 ## Last Session
 
-- **Stopped at:** Phase 7 planned
-- **Resume file:** `.planning/phases/07-shutdown-hardening-and-demo-readiness/07-01-PLAN.md`
+- **Stopped at:** Phase 7 automated hardening complete; manual demo preflight blocked
+- **Resume file:** `docs/demo-runbook.md`
 
 ## Quick Tasks Completed
 

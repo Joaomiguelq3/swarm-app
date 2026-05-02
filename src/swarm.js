@@ -74,6 +74,7 @@ function createSwarm(options = {}) {
   const now = options.now || (() => new Date().toISOString());
   const processes = new Map();
   let activeMission = null;
+  let stopping = false;
 
   function emit(event) {
     emitter.emit('event', {
@@ -146,6 +147,7 @@ function createSwarm(options = {}) {
     if (activeMission) {
       stop('restart');
     }
+    stopping = false;
 
     const runtimeId = input.runtime || workspace.runtime || 'codex';
     const runtime = input.runtimeConfig || options.runtime || getRuntime(runtimeId);
@@ -240,7 +242,16 @@ function createSwarm(options = {}) {
   }
 
   function stop(reason = 'stop') {
-    for (const [agentId, child] of processes.entries()) {
+    if (stopping || (!activeMission && processes.size === 0)) {
+      return { ok: true, stopped: false, reason };
+    }
+
+    stopping = true;
+    const missionId = activeMission ? activeMission.id : null;
+    const children = Array.from(processes.entries());
+    processes.clear();
+
+    for (const [agentId, child] of children) {
       try {
         child.kill();
       } catch (error) {
@@ -253,12 +264,11 @@ function createSwarm(options = {}) {
         });
       }
     }
-    processes.clear();
 
     if (activeMission) {
       emit({
         type: 'mission:stop',
-        missionId: activeMission.id,
+        missionId,
         status: STATUS.IDLE,
         reason,
         message: `Swarm parado: ${reason}.`
@@ -266,7 +276,8 @@ function createSwarm(options = {}) {
       activeMission = null;
     }
 
-    return { ok: true };
+    stopping = false;
+    return { ok: true, stopped: true, reason };
   }
 
   return {
