@@ -50,6 +50,8 @@ async function main() {
   });
   assert.strictEqual(tasks.length, 6, 'agent count must clamp to six');
   assert.match(tasks[0].prompt, /criar login/, 'task prompt must include mission');
+  assert.match(tasks[0].title, /novo projeto/, 'first terminal must own new project');
+  assert.strictEqual(tasks[1].prompt, '', 'support terminals must start without an automatic prompt');
 
   const fake = createFakeSpawn();
   const events = [];
@@ -85,7 +87,7 @@ async function main() {
   assert(events.some((event) => event.type === 'agent:start'), 'agent start event missing');
   assert(events.some((event) => event.type === 'agent:output'), 'agent output event missing');
   assert(events.some((event) => event.type === 'agent:exit' && event.status === 'DONE'), 'done exit missing');
-  assert.strictEqual(fake.writes.length, 3, 'each fake process receives a prompt and pane input is forwarded');
+  assert.strictEqual(fake.writes.length, 2, 'only project terminal receives prompt and pane input is forwarded');
   console.log('smoke-swarm-core ok');
 }
 

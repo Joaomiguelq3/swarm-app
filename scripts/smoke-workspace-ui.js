@@ -31,7 +31,7 @@ function main() {
   includes(workspace, 'id="pane-grid"', 'pane grid hook');
   includes(workspace, 'id="mission-input"', 'mission input hook');
   includes(workspace, 'Novo projeto', 'new project field label');
-  includes(workspace, '$gsd-new-project', 'new project command hint');
+  includes(workspace, 'Terminal 1', 'new project owner hint');
   includes(workspace, 'id="agent-count"', 'agent count hook');
   includes(workspace, 'id="launch-swarm-button"', 'launch placeholder hook');
   includes(workspace, 'id="activity-feed"', 'activity feed hook');

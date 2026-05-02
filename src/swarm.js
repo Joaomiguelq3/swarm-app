@@ -32,22 +32,26 @@ function decomposeMission(input = {}) {
 
   return Array.from({ length: agentCount }, (_, index) => {
     const agentId = index + 1;
+    const isProjectLead = agentId === 1;
     return {
       id: `agent-${agentId}`,
       paneId: agentId,
-      title: `Terminal ${agentId}: sessao independente`,
-      prompt: [
-        mission,
-        '',
-        `Runtime: ${runtime}`,
-        `Modelo: ${model}`,
-        `Voce esta no terminal ${agentId} de ${agentCount}, rodando no mesmo projeto que os outros terminais.`,
-        'Trabalhe de forma independente. Nao assuma que outro terminal vai executar sua parte.',
-        'Antes de editar arquivos, considere conflitos com outros terminais ativos e relate claramente o que alterou.',
-        '',
-        'Contexto do projeto:',
-        scoutContext
-      ].join('\n')
+      title: isProjectLead
+        ? 'Terminal 1: novo projeto'
+        : `Terminal ${agentId}: livre`,
+      prompt: isProjectLead
+        ? [
+            mission,
+            '',
+            `Runtime: ${runtime}`,
+            `Modelo: ${model}`,
+            'Voce e o terminal responsavel por iniciar o novo projeto.',
+            'Use os outros terminais apenas como apoio independente quando o usuario pedir.',
+            '',
+            'Contexto do projeto:',
+            scoutContext
+          ].join('\n')
+        : ''
     };
   });
 }
@@ -225,7 +229,9 @@ function createSwarm(options = {}) {
         });
 
         child.onExit((exit) => markAgentExit(missionId, agentId, task.paneId, exit));
-        child.write(`${task.prompt}\r`);
+        if (task.prompt) {
+          child.write(`${task.prompt}\r`);
+        }
       } catch (error) {
         emit({
           type: 'agent:error',

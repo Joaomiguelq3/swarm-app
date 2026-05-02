@@ -1376,7 +1376,7 @@ async function handleLaunch() {
   state.launchInProgress = true;
   setWorkspaceControlsDisabled(true);
   updateStopButtonState();
-  addFeedEvent('mission', `iniciando ${agentCount} terminal(is) Codex no mesmo projeto`);
+  addFeedEvent('mission', `terminal 1 inicia o novo projeto; ${Math.max(0, agentCount - 1)} terminal(is) ficam livres no mesmo projeto`);
 
   try {
     const activeWorkspace = state.activeWorkspace || workspace;
