@@ -132,6 +132,66 @@ h1 {
   font-size: 12px;
 }
 
+.update-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 255, 136, 0.34);
+  background: rgba(0, 255, 136, 0.08);
+  color: var(--green);
+  cursor: default;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.update-status.update-stale,
+.update-status.update-error {
+  border-color: rgba(255, 68, 68, 0.46);
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--red);
+  cursor: pointer;
+}
+
+.update-status.update-checking,
+.update-status.update-downloading {
+  border-color: rgba(255, 170, 0, 0.46);
+  background: rgba(255, 170, 0, 0.1);
+  color: var(--yellow);
+  cursor: wait;
+}
+
+.update-status.update-ready {
+  border-color: rgba(255, 68, 68, 0.58);
+  background: rgba(255, 68, 68, 0.14);
+  color: var(--red);
+  cursor: pointer;
+}
+
+.update-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green-dim);
+}
+
+.update-stale .update-dot,
+.update-ready .update-dot,
+.update-error .update-dot {
+  background: var(--red);
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.28);
+}
+
+.update-checking .update-dot,
+.update-downloading .update-dot {
+  background: var(--yellow);
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.28);
+}
+
 .status-dot {
   width: 8px;
   height: 8px;

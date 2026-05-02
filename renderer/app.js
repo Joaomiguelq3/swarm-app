@@ -30,6 +30,11 @@ const state = {
   runtimeStatusLoading: false,
   swarmUnsubscribe: null,
   updateUnsubscribe: null,
+  updateStatus: {
+    kind: 'current',
+    label: 'atualizado',
+    action: 'check'
+  },
   overlayTimer: null
 };
 
@@ -115,6 +120,62 @@ function setBridgeStatus(status, className) {
     if (className) {
       wrapper.classList.add(className);
     }
+  }
+}
+
+function bindUpdateStatusButton() {
+  const button = getElement('app-update-status');
+  if (button) {
+    button.addEventListener('click', handleUpdateStatusClick);
+  }
+  renderUpdateStatus();
+}
+
+function setUpdateStatus(kind, label, action) {
+  state.updateStatus = {
+    kind,
+    label,
+    action
+  };
+  renderUpdateStatus();
+}
+
+function renderUpdateStatus() {
+  const button = getElement('app-update-status');
+  const label = getElement('app-update-label');
+  if (!button || !label) {
+    return;
+  }
+
+  const status = state.updateStatus || {};
+  button.classList.remove(
+    'update-current',
+    'update-stale',
+    'update-checking',
+    'update-downloading',
+    'update-ready',
+    'update-error'
+  );
+  button.classList.add(`update-${status.kind || 'current'}`);
+  label.textContent = status.label || 'atualizado';
+
+  const clickable = status.action === 'download' || status.action === 'install' || status.action === 'retry';
+  button.disabled = status.action === 'wait';
+  button.setAttribute('aria-disabled', String(button.disabled));
+  button.title = clickable
+    ? 'Clique para atualizar o AVANT IA'
+    : 'AVANT IA atualizado';
+}
+
+async function handleUpdateStatusClick() {
+  const status = state.updateStatus || {};
+  if (status.action === 'download' || status.action === 'install' || status.action === 'retry') {
+    await installDownloadedUpdate();
+    return;
+  }
+
+  if (status.action === 'check') {
+    await checkForUpdates(true);
   }
 }
 
@@ -491,6 +552,7 @@ function initHome() {
   initTypingLogo();
   initMatrixCanvas();
   bindModalEvents();
+  bindUpdateStatusButton();
   subscribeToUpdates();
   initBridgeStatus();
   checkForUpdates(false);
@@ -500,6 +562,7 @@ function initHome() {
 async function initWorkspace() {
   showWorkspaceLoading();
   bindWorkspaceEvents();
+  bindUpdateStatusButton();
   subscribeToOrchestration();
   subscribeToUpdates();
   checkForUpdates(false);
@@ -650,11 +713,16 @@ async function checkForUpdates(reportSkipped) {
   }
 
   try {
+    setUpdateStatus('checking', 'verificando...', 'wait');
     const result = await window.swarm.updates.check();
     if (result && result.skipped && reportSkipped) {
       addFeedEvent('runtime', result.message);
     }
+    if (result && result.skipped) {
+      setUpdateStatus('current', 'atualizado', 'check');
+    }
   } catch (error) {
+    setUpdateStatus('error', 'desatualizado', 'retry');
     addFeedEvent('error', error.message || 'erro ao verificar atualizacao');
   }
 }
@@ -665,37 +733,43 @@ async function installDownloadedUpdate() {
   }
 
   try {
+    setUpdateStatus('downloading', 'atualizando...', 'wait');
     await window.swarm.updates.install();
   } catch (error) {
+    setUpdateStatus('error', 'desatualizado', 'retry');
     addFeedEvent('error', error.message || 'erro ao instalar atualizacao');
   }
 }
 
 function handleUpdateEvent(event = {}) {
   if (event.type === 'checking') {
+    setUpdateStatus('checking', 'verificando...', 'wait');
     addFeedEvent('runtime', 'verificando atualizacoes do AVANT IA');
     return;
   }
   if (event.type === 'available') {
+    setUpdateStatus('stale', 'desatualizado', 'download');
     addFeedEvent('runtime', `atualizacao disponivel: ${event.version}`);
     return;
   }
   if (event.type === 'not-available') {
+    setUpdateStatus('current', 'atualizado', 'check');
     addFeedEvent('runtime', 'AVANT IA ja esta atualizado');
     return;
   }
   if (event.type === 'download-progress') {
+    setUpdateStatus('downloading', `baixando ${event.percent}%`, 'wait');
     addFeedEvent('runtime', `baixando atualizacao: ${event.percent}%`);
     return;
   }
   if (event.type === 'downloaded') {
+    setUpdateStatus('ready', 'desatualizado', 'install');
     addFeedEvent('runtime', `atualizacao ${event.version} baixada`);
-    if (window.confirm('Atualizacao do AVANT IA baixada. Reiniciar e instalar agora?')) {
-      installDownloadedUpdate();
-    }
+    addFeedEvent('runtime', 'clique em desatualizado para reiniciar e instalar');
     return;
   }
   if (event.type === 'error') {
+    setUpdateStatus('error', 'desatualizado', 'retry');
     addFeedEvent('error', event.message || 'erro no auto-update');
   }
 }

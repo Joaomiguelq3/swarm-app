@@ -3,6 +3,8 @@
 const { autoUpdater } = require('electron-updater');
 
 let updateReady = false;
+let updateAvailable = false;
+let downloading = false;
 
 function sendUpdateEvent(getWindow, type, payload = {}) {
   const window = typeof getWindow === 'function' ? getWindow() : null;
@@ -22,7 +24,7 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
     throw new Error('ipcMain with handle() is required');
   }
 
-  autoUpdater.autoDownload = true;
+  autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
 
   autoUpdater.on('checking-for-update', () => {
@@ -30,18 +32,24 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
   });
 
   autoUpdater.on('update-available', (info) => {
+    updateAvailable = true;
+    downloading = false;
     sendUpdateEvent(getWindow, 'available', {
       version: info.version
     });
   });
 
   autoUpdater.on('update-not-available', (info) => {
+    updateReady = false;
+    updateAvailable = false;
+    downloading = false;
     sendUpdateEvent(getWindow, 'not-available', {
       version: info.version
     });
   });
 
   autoUpdater.on('download-progress', (progress) => {
+    downloading = true;
     sendUpdateEvent(getWindow, 'download-progress', {
       percent: Math.round(progress.percent || 0)
     });
@@ -49,6 +57,8 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
 
   autoUpdater.on('update-downloaded', (info) => {
     updateReady = true;
+    updateAvailable = true;
+    downloading = false;
     sendUpdateEvent(getWindow, 'downloaded', {
       version: info.version
     });
@@ -76,16 +86,28 @@ function registerAutoUpdater({ ipcMain, app, getWindow }) {
     };
   });
 
-  ipcMain.handle('avant:update:install', () => {
-    if (!updateReady) {
+  ipcMain.handle('avant:update:install', async () => {
+    if (updateReady) {
+      autoUpdater.quitAndInstall(false, true);
+      return { ok: true, action: 'installing' };
+    }
+
+    if (updateAvailable && !downloading) {
+      downloading = true;
+      await autoUpdater.downloadUpdate();
+      return { ok: true, action: 'downloading' };
+    }
+
+    if (downloading) {
       return {
-        ok: false,
-        message: 'Nenhuma atualizacao baixada.'
+        ok: true,
+        action: 'downloading',
+        message: 'Atualizacao ja esta baixando.'
       };
     }
 
-    autoUpdater.quitAndInstall(false, true);
-    return { ok: true };
+    await autoUpdater.checkForUpdates();
+    return { ok: true, action: 'checking' };
   });
 }
 
