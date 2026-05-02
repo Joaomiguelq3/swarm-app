@@ -37,9 +37,10 @@ function decomposeMission(input = {}) {
       paneId: agentId,
       title: `Terminal ${agentId}: sessao independente`,
       prompt: [
+        mission,
+        '',
         `Runtime: ${runtime}`,
         `Modelo: ${model}`,
-        `Problema compartilhado: ${mission}`,
         `Voce esta no terminal ${agentId} de ${agentCount}, rodando no mesmo projeto que os outros terminais.`,
         'Trabalhe de forma independente. Nao assuma que outro terminal vai executar sua parte.',
         'Antes de editar arquivos, considere conflitos com outros terminais ativos e relate claramente o que alterou.',
@@ -74,6 +75,7 @@ function createSwarm(options = {}) {
   const scout = options.scout || scoutProject;
   const now = options.now || (() => new Date().toISOString());
   const processes = new Map();
+  const paneProcesses = new Map();
   let activeMission = null;
   let stopping = false;
 
@@ -99,6 +101,7 @@ function createSwarm(options = {}) {
     const status = code === 0 ? STATUS.DONE : STATUS.ERROR;
     const mission = activeMission;
     processes.delete(agentId);
+    paneProcesses.delete(Number(paneId));
 
     if (mission) {
       mission.completed += 1;
@@ -207,6 +210,7 @@ function createSwarm(options = {}) {
           missionId
         });
         processes.set(agentId, child);
+        paneProcesses.set(Number(task.paneId), child);
 
         child.onData((output) => {
           emit({
@@ -254,6 +258,7 @@ function createSwarm(options = {}) {
     const missionId = activeMission ? activeMission.id : null;
     const children = Array.from(processes.entries());
     processes.clear();
+    paneProcesses.clear();
 
     for (const [agentId, child] of children) {
       try {
@@ -287,6 +292,14 @@ function createSwarm(options = {}) {
   return {
     launch,
     stop,
+    writeToPane(paneId, data) {
+      const child = paneProcesses.get(Number(paneId));
+      if (!child || typeof child.write !== 'function') {
+        return { ok: false, error: `Terminal ${paneId} nao esta ativo.` };
+      }
+      child.write(String(data || ''));
+      return { ok: true };
+    },
     onEvent(listener) {
       emitter.on('event', listener);
       return () => emitter.off('event', listener);

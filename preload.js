@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld('swarm', {
   orchestration: {
     launch: (input) => ipcRenderer.invoke('swarm:orchestration:launch', input),
     stop: (reason) => ipcRenderer.invoke('swarm:orchestration:stop', reason),
+    input: (paneId, data) => ipcRenderer.invoke('swarm:orchestration:input', { paneId, data }),
     onEvent: (callback) => {
       if (typeof callback !== 'function') {
         return () => {};

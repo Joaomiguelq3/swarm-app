@@ -77,13 +77,15 @@ async function main() {
 
   assert.strictEqual(result.ok, true);
   assert.strictEqual(result.tasks.length, 2);
+  const inputResult = swarm.writeToPane(1, 'usuario digitou');
+  assert.strictEqual(inputResult.ok, true, 'pane input must write to active process');
   await waitFor(events, 'mission:done');
 
   assert(events.some((event) => event.type === 'mission:start'), 'mission start event missing');
   assert(events.some((event) => event.type === 'agent:start'), 'agent start event missing');
   assert(events.some((event) => event.type === 'agent:output'), 'agent output event missing');
   assert(events.some((event) => event.type === 'agent:exit' && event.status === 'DONE'), 'done exit missing');
-  assert.strictEqual(fake.writes.length, 2, 'each fake process receives a prompt');
+  assert.strictEqual(fake.writes.length, 3, 'each fake process receives a prompt and pane input is forwarded');
   console.log('smoke-swarm-core ok');
 }
 

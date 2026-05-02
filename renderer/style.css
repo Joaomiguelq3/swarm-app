@@ -888,9 +888,26 @@ dd {
 
 .terminal-surface {
   position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   padding: 12px;
   overflow: auto;
+}
+
+.xterm-mount {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.xterm-mount .xterm {
+  height: 100%;
+}
+
+.xterm-mount .xterm-viewport {
+  background: transparent;
 }
 
 .terminal-placeholder {

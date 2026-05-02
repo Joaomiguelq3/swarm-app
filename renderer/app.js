@@ -38,6 +38,8 @@ const state = {
   overlayTimer: null
 };
 
+const terminalInstances = new Map();
+
 function getElement(id) {
   return document.getElementById(id);
 }
@@ -62,6 +64,118 @@ function clearChildren(id) {
     element.replaceChildren();
   }
   return element;
+}
+
+function getXtermCtor() {
+  if (window.Terminal) {
+    return window.Terminal;
+  }
+  if (window.XTerm && window.XTerm.Terminal) {
+    return window.XTerm.Terminal;
+  }
+  return null;
+}
+
+function disposePaneTerminal(paneId) {
+  const current = terminalInstances.get(Number(paneId));
+  if (current && current.terminal && typeof current.terminal.dispose === 'function') {
+    current.terminal.dispose();
+  }
+  terminalInstances.delete(Number(paneId));
+}
+
+function disposeAllTerminals() {
+  for (const paneId of terminalInstances.keys()) {
+    disposePaneTerminal(paneId);
+  }
+}
+
+function mountPaneTerminal(pane, mount) {
+  if (!mount) {
+    return;
+  }
+
+  disposePaneTerminal(pane.id);
+  const TerminalCtor = getXtermCtor();
+  if (!TerminalCtor) {
+    mount.textContent = 'xterm indisponivel';
+    return;
+  }
+
+  const terminal = new TerminalCtor({
+    convertEol: true,
+    cursorBlink: true,
+    disableStdin: false,
+    fontFamily: 'Consolas, "Cascadia Mono", monospace',
+    fontSize: 12,
+    rows: 30,
+    cols: 120,
+    theme: {
+      background: '#050505',
+      foreground: '#d7ffd7',
+      cursor: '#00ff88',
+      selectionBackground: '#00ff8844',
+      black: '#050505',
+      red: '#ff4444',
+      green: '#00ff88',
+      yellow: '#ffaa00',
+      blue: '#4488ff',
+      magenta: '#aa66ff',
+      cyan: '#00d7ff',
+      white: '#f0f0f0'
+    }
+  });
+
+  terminal.open(mount);
+  terminal.onData((data) => {
+    if (
+      window.swarm &&
+      window.swarm.orchestration &&
+      typeof window.swarm.orchestration.input === 'function'
+    ) {
+      window.swarm.orchestration.input(pane.id, data);
+    }
+  });
+
+  terminalInstances.set(Number(pane.id), { terminal });
+
+  if (Array.isArray(pane.output) && pane.output.length > 0) {
+    terminal.write(pane.output.join(''));
+  } else {
+    terminal.writeln('Codex aguardando inicio do novo projeto...');
+  }
+}
+
+function writePaneTerminal(paneId, output) {
+  const current = terminalInstances.get(Number(paneId));
+  if (current && current.terminal) {
+    current.terminal.write(String(output || ''));
+  }
+}
+
+function setPaneStatusDom(paneId, status) {
+  const article = document.querySelector(`.terminal-pane[data-pane-id="${paneId}"]`);
+  if (!article) {
+    return;
+  }
+  for (const item of PANE_STATUSES) {
+    article.classList.remove(`status-${item.toLowerCase()}`);
+  }
+  article.classList.add(`status-${normalizeStatus(status).toLowerCase()}`);
+
+  const dot = article.querySelector('.pane-status-dot');
+  if (dot) {
+    dot.className = `pane-status-dot status-${normalizeStatus(status).toLowerCase()}`;
+  }
+
+  const label = article.querySelector('.pane-status-label');
+  if (label) {
+    label.textContent = normalizeStatus(status);
+  }
+}
+
+function buildNewProjectPrompt(description) {
+  return `$gsd-new-project ${String(description || '').trim()}`;
 }
 
 function getRuntimeView(runtimeId) {
@@ -889,21 +1003,14 @@ function renderPanes() {
       body.appendChild(task);
     }
 
-    const output = Array.isArray(pane.output) ? pane.output : [];
-    if (output.length === 0) {
-      const prompt = document.createElement('p');
-      prompt.className = 'terminal-placeholder';
-      prompt.textContent = 'terminal independente aguardando problema';
-      body.appendChild(prompt);
-    } else {
-      const pre = document.createElement('pre');
-      pre.className = 'terminal-output';
-      pre.textContent = output.join('');
-      body.appendChild(pre);
-    }
+    const terminalMount = document.createElement('div');
+    terminalMount.className = 'xterm-mount';
+    terminalMount.dataset.paneTerminal = String(pane.id);
+    body.appendChild(terminalMount);
 
     article.append(header, body);
     grid.appendChild(article);
+    mountPaneTerminal(pane, terminalMount);
   }
 }
 
@@ -1212,6 +1319,7 @@ async function stopActiveProcesses(reason) {
 
   state.missionActive = false;
   state.launchInProgress = false;
+  disposeAllTerminals();
   state.panes = state.panes.map((pane) => ({
     ...pane,
     status: 'IDLE',
@@ -1232,45 +1340,56 @@ async function handleLaunch() {
   const workspace = state.activeWorkspace;
   const missionInput = getElement('mission-input');
   const agentInput = getElement('agent-count');
-  const mission = missionInput ? missionInput.value.trim() : '';
+  const projectPrompt = missionInput ? missionInput.value.trim() : '';
   const agentCount = agentInput ? Number.parseInt(agentInput.value, 10) : 3;
+  const launchRuntime = 'codex';
 
   if (!workspace) {
     addFeedEvent('error', 'workspace ativo ausente');
     return;
   }
-  if (!mission) {
-    addFeedEvent('error', 'informe um problema antes de iniciar os terminais');
+  if (!projectPrompt) {
+    addFeedEvent('error', 'informe o prompt do novo projeto antes de iniciar os terminais');
     return;
   }
   if (!hasOrchestrationBridge('launch')) {
     addFeedEvent('error', 'orchestration bridge missing');
     return;
   }
+
+  if (workspace.runtime !== launchRuntime && window.swarm?.workspaces?.updateRuntime) {
+    const nextModel = resolveModelForRuntime(launchRuntime);
+    const result = await window.swarm.workspaces.updateRuntime(workspace.id, launchRuntime, nextModel);
+    applyWorkspaceResult(result);
+    addFeedEvent('runtime', 'runtime alterado para CODEX para iniciar novo projeto');
+  }
+
   if (hasRuntimeBridge('status')) {
     await refreshRuntimeStatus(false);
-    if (!state.runtimeStatus || state.runtimeStatus.runtime !== workspace.runtime || state.runtimeStatus.status !== 'available') {
-      addFeedEvent('error', `verifique se o CLI ${getRuntimeView(workspace.runtime).label} esta disponivel antes de iniciar`);
+    if (!state.runtimeStatus || state.runtimeStatus.runtime !== launchRuntime || state.runtimeStatus.status !== 'available') {
+      addFeedEvent('error', `verifique se o CLI ${getRuntimeView(launchRuntime).label} esta disponivel antes de iniciar`);
       return;
     }
   }
 
+  const mission = buildNewProjectPrompt(projectPrompt);
   state.launchInProgress = true;
   setWorkspaceControlsDisabled(true);
   updateStopButtonState();
-  addFeedEvent('mission', `iniciando ${agentCount} terminal(is) independente(s) com o mesmo problema`);
+  addFeedEvent('mission', `iniciando ${agentCount} terminal(is) Codex no mesmo projeto`);
 
   try {
+    const activeWorkspace = state.activeWorkspace || workspace;
     const result = await window.swarm.orchestration.launch({
       mission,
       agentCount,
-      workspace,
-      workspacePath: workspace.path,
-      runtime: workspace.runtime,
-      model: workspace.model
+      workspace: activeWorkspace,
+      workspacePath: activeWorkspace.path,
+      runtime: launchRuntime,
+      model: activeWorkspace.model
     });
     if (result && Array.isArray(result.tasks)) {
-      showLaunchOverlay(result.tasks, workspace.runtime);
+      showLaunchOverlay(result.tasks, launchRuntime);
     }
   } catch (error) {
     state.launchInProgress = false;
@@ -1312,14 +1431,17 @@ function handleSwarmEvent(event) {
   if (event.type === 'agent:output') {
     appendPaneOutput(event.paneId, event.output || '');
     updatePane(event.paneId, { status: event.status || 'WRITING' }, false);
-    renderPanes();
+    writePaneTerminal(event.paneId, event.output || '');
+    setPaneStatusDom(event.paneId, event.status || 'WRITING');
     renderNodePanel();
     return;
   }
 
   if (event.type === 'agent:exit') {
-    updatePane(event.paneId, { status: event.status || 'DONE' });
+    updatePane(event.paneId, { status: event.status || 'DONE' }, false);
+    setPaneStatusDom(event.paneId, event.status || 'DONE');
     addFeedEvent(event.status === 'ERROR' ? 'error' : 'agent', event.message || `terminal ${event.paneId} finalizado`);
+    renderNodePanel();
     return;
   }
 

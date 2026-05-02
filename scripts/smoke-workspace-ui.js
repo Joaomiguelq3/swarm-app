@@ -30,6 +30,8 @@ function main() {
   includes(workspace, 'id="active-runtime-badge"', 'active runtime badge hook');
   includes(workspace, 'id="pane-grid"', 'pane grid hook');
   includes(workspace, 'id="mission-input"', 'mission input hook');
+  includes(workspace, 'Novo projeto', 'new project field label');
+  includes(workspace, '$gsd-new-project', 'new project command hint');
   includes(workspace, 'id="agent-count"', 'agent count hook');
   includes(workspace, 'id="launch-swarm-button"', 'launch placeholder hook');
   includes(workspace, 'id="activity-feed"', 'activity feed hook');
@@ -42,6 +44,7 @@ function main() {
   includes(css, '.workspace-tabs', 'workspace tabs CSS');
   includes(css, '.pane-grid', 'pane grid CSS');
   includes(css, '.terminal-pane', 'terminal pane CSS');
+  includes(css, '.xterm-mount', 'xterm mount CSS');
   includes(css, '.pane-status-dot.status-thinking', 'thinking status CSS');
   includes(css, '.pane-status-dot.status-writing', 'writing status CSS');
   includes(css, '.pane-status-dot.status-done', 'done status CSS');
@@ -63,6 +66,8 @@ function main() {
   includes(js, 'renderModelOptions', 'runtime model option renderer');
   includes(js, 'getModelLabel', 'model metadata label renderer');
   includes(js, 'handleLaunch', 'real launch handler');
+  includes(js, 'buildNewProjectPrompt', 'new project prompt builder');
+  includes(js, "const launchRuntime = 'codex'", 'Codex launch runtime');
 
   for (const oldModel of ['gpt-4o', 'gpt-5.2', 'claude-3-', 'latest']) {
     assert.ok(!js.includes(oldModel), `renderer should not hardcode old model marker: ${oldModel}`);

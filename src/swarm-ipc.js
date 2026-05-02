@@ -5,6 +5,7 @@ const { speak } = require('./tts');
 const CHANNELS = {
   launch: 'swarm:orchestration:launch',
   stop: 'swarm:orchestration:stop',
+  input: 'swarm:orchestration:input',
   event: 'swarm:orchestration:event'
 };
 
@@ -205,6 +206,13 @@ function registerSwarmIpc({
 
   ipcMain.handle(CHANNELS.stop, async (_event, reason = 'stop') => {
     return stopActive(reason);
+  });
+
+  ipcMain.handle(CHANNELS.input, async (_event, input = {}) => {
+    if (!active || !active.swarm) {
+      return { ok: false, error: 'Nenhum terminal ativo.' };
+    }
+    return active.swarm.writeToPane(input.paneId, input.data);
   });
 
   return {

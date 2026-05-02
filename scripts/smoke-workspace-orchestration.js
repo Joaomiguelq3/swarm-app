@@ -11,7 +11,9 @@ assert(app.includes('handleSwarmEvent'), 'event handler missing');
 assert(app.includes("event.type === 'file:event'"), 'file events must feed renderer state');
 assert(app.includes("event.type === 'agent:output'"), 'agent output handling missing');
 assert(app.includes('appendPaneOutput'), 'pane output append missing');
-assert(app.includes('terminal-output'), 'terminal output rendering missing');
+assert(app.includes('writePaneTerminal'), 'xterm output writer missing');
+assert(app.includes('window.swarm.orchestration.input'), 'terminal input bridge missing');
+assert(html.includes('@xterm/xterm'), 'xterm assets missing');
 assert(!app.includes('handleLaunchPlaceholder'), 'phase 5 placeholder launch must be removed');
 assert(html.includes('activity-feed'), 'activity feed hook missing');
 
