@@ -10,7 +10,7 @@ function main() {
   const codex = checkRuntime('codex');
   assert.strictEqual(codex.runtime, 'codex');
   assert.strictEqual(codex.label, 'CODEX');
-  assert.ok(['ready', 'missing', 'error'].includes(codex.status));
+  assert.ok(['available', 'missing', 'error'].includes(codex.status));
 
   if (process.platform === 'win32') {
     assert.notStrictEqual(codex.message, 'codex nao encontrado no PATH');

@@ -40,26 +40,26 @@
         </section>
 
         <section class="workspace-grid-layout">
-          <section class="terminal-area" aria-label="Terminal panes">
+          <section class="terminal-area" aria-label="Terminais independentes">
             <div id="pane-grid" class="pane-grid"></div>
 
-            <section class="mission-bar" aria-label="Missao do swarm">
+            <section class="mission-bar" aria-label="Problema para os terminais">
               <label class="mission-field">
-                <span>missao</span>
-                <input id="mission-input" type="text" placeholder="descreva a missao para a fase 6">
+                <span>problema</span>
+                <input id="mission-input" type="text" placeholder="descreva o problema que cada terminal deve atacar">
               </label>
 
               <label class="agent-count-field">
-                <span>agentes</span>
+                <span>terminais</span>
                 <input id="agent-count" type="number" min="1" max="6" value="3">
               </label>
 
               <button id="launch-swarm-button" class="button button-primary" type="button">
-                LAUNCH AVANT IA
+                INICIAR TERMINAIS
               </button>
 
               <button id="stop-swarm-button" class="button button-danger" type="button" disabled>
-                STOP AVANT IA
+                PARAR TERMINAIS
               </button>
             </section>
 
@@ -82,7 +82,7 @@
                   <h2>Projeto</h2>
                 </div>
               </div>
-              <p class="muted-copy">scout roda antes do launch; sentinel publica alteracoes no feed</p>
+              <p class="muted-copy">scout roda antes de iniciar; sentinel publica alteracoes no feed</p>
             </section>
 
             <section class="node-panel">
@@ -149,7 +149,7 @@
 
     <section id="launch-overlay" class="launch-overlay" aria-live="polite" hidden>
       <div class="launch-overlay-inner">
-        <p class="launch-title">AVANT IA - spawning agents...</p>
+        <p class="launch-title">AVANT IA - iniciando terminais...</p>
         <div id="launch-overlay-runtime" class="launch-runtime"></div>
         <ul id="launch-overlay-tasks" class="launch-task-list"></ul>
       </div>

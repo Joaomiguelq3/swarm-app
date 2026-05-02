@@ -80,11 +80,8 @@ const RUNTIMES = {
 if (process.platform === 'win32') {
   RUNTIMES.codex.cmd = 'codex.cmd';
   RUNTIMES.codex.args = [
-    '--sandbox',
-    'danger-full-access',
-    '--ask-for-approval',
-    'never',
-    '--dangerously-bypass-approvals-and-sandbox'
+    '--dangerously-bypass-approvals-and-sandbox',
+    '--no-alt-screen'
   ];
 }
 

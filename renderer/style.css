@@ -361,10 +361,24 @@ select:focus-visible {
   border: 1px solid #aa66ff44;
 }
 
+.badge-claude::before {
+  content: "C";
+  margin-right: 6px;
+  font-size: 10px;
+  line-height: 1;
+}
+
 .badge-codex {
   background: #00ff8822;
   color: var(--green);
   border: 1px solid #00ff8844;
+}
+
+.badge-codex::before {
+  content: ">";
+  margin-right: 6px;
+  font-size: 10px;
+  line-height: 1;
 }
 
 .state-line,
@@ -1019,7 +1033,8 @@ dd {
   background: var(--text-dim);
 }
 
-.account-ready {
+.account-ready,
+.account-available {
   background: var(--green);
   box-shadow: 0 0 10px var(--green-dim);
 }

@@ -62,11 +62,8 @@ assert.strictEqual(RUNTIMES.claude.skillsDir, '.claude/skills/');
 if (process.platform === 'win32') {
   assert.strictEqual(RUNTIMES.codex.cmd, 'codex.cmd');
   assert.deepStrictEqual(RUNTIMES.codex.args, [
-    '--sandbox',
-    'danger-full-access',
-    '--ask-for-approval',
-    'never',
-    '--dangerously-bypass-approvals-and-sandbox'
+    '--dangerously-bypass-approvals-and-sandbox',
+    '--no-alt-screen'
   ]);
 } else {
   assert.deepStrictEqual(RUNTIMES.codex.args, ['--approval-mode', 'full-auto']);

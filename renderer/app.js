@@ -389,6 +389,7 @@ function createWorkspaceCard(workspace) {
 function createRuntimeBadge(runtime) {
   const badge = document.createElement('span');
   badge.className = `runtime-badge ${runtime.badgeClass}`;
+  badge.dataset.runtime = runtime.id || '';
   badge.textContent = runtime.label;
   return badge;
 }
@@ -892,7 +893,7 @@ function renderPanes() {
     if (output.length === 0) {
       const prompt = document.createElement('p');
       prompt.className = 'terminal-placeholder';
-      prompt.textContent = 'terminal aguardando orquestracao';
+      prompt.textContent = 'terminal independente aguardando problema';
       body.appendChild(prompt);
     } else {
       const pre = document.createElement('pre');
@@ -1007,7 +1008,7 @@ function renderRuntimeAccount() {
 
   const loginButton = getElement('runtime-login-button');
   if (loginButton) {
-    loginButton.textContent = status?.status === 'ready' ? 'conectado' : `login ${runtime.label}`;
+    loginButton.textContent = `login ${runtime.label}`;
     loginButton.disabled = state.runtimeStatusLoading;
   }
 
@@ -1020,7 +1021,7 @@ function renderRuntimeAccount() {
 
 function getRuntimeStatusText(runtime, status, loading) {
   if (loading) {
-    return `verificando ${runtime.label} no PATH...`;
+    return `verificando CLI ${runtime.label} no PATH...`;
   }
   if (!hasRuntimeBridge('status')) {
     return 'bridge de runtime indisponivel';
@@ -1028,8 +1029,8 @@ function getRuntimeStatusText(runtime, status, loading) {
   if (!status || status.runtime !== runtime.id) {
     return `clique em verificar para validar ${runtime.label}`;
   }
-  if (status.status === 'ready') {
-    return `${runtime.label} pronto: ${status.message}`;
+  if (status.status === 'available') {
+    return `${runtime.label} disponivel: ${status.message}`;
   }
   if (status.status === 'missing') {
     return `${runtime.label} nao encontrado. Clique em login depois confirme se o CLI esta instalado no PATH.`;
@@ -1050,7 +1051,7 @@ async function refreshRuntimeStatus(reportToFeed = false) {
     const result = await window.swarm.runtimes.status(workspace.runtime);
     state.runtimeStatus = result;
     if (reportToFeed) {
-      addFeedEvent(result.status === 'ready' ? 'runtime' : 'error', result.message);
+      addFeedEvent(result.status === 'available' ? 'runtime' : 'error', result.message);
     }
   } catch (error) {
     state.runtimeStatus = {
@@ -1096,8 +1097,7 @@ async function handleRuntimeLogin() {
   } finally {
     if (loginButton) {
       loginButton.disabled = false;
-      loginButton.textContent = 'verificar';
-      loginButton.onclick = () => refreshRuntimeStatus(true);
+      loginButton.textContent = `login ${runtime.label}`;
     }
   }
 }
@@ -1218,7 +1218,7 @@ async function stopActiveProcesses(reason) {
     taskTitle: ''
   }));
   hideLaunchOverlay();
-  addFeedEvent('process', `orquestracao parada: ${reason}`);
+  addFeedEvent('process', `terminais parados: ${reason}`);
   renderPanes();
   renderNodePanel();
   updateStopButtonState();
@@ -1240,7 +1240,7 @@ async function handleLaunch() {
     return;
   }
   if (!mission) {
-    addFeedEvent('error', 'informe uma missao antes de iniciar');
+    addFeedEvent('error', 'informe um problema antes de iniciar os terminais');
     return;
   }
   if (!hasOrchestrationBridge('launch')) {
@@ -1249,8 +1249,8 @@ async function handleLaunch() {
   }
   if (hasRuntimeBridge('status')) {
     await refreshRuntimeStatus(false);
-    if (!state.runtimeStatus || state.runtimeStatus.runtime !== workspace.runtime || state.runtimeStatus.status !== 'ready') {
-      addFeedEvent('error', `faça login/verifique ${getRuntimeView(workspace.runtime).label} antes do launch`);
+    if (!state.runtimeStatus || state.runtimeStatus.runtime !== workspace.runtime || state.runtimeStatus.status !== 'available') {
+      addFeedEvent('error', `verifique se o CLI ${getRuntimeView(workspace.runtime).label} esta disponivel antes de iniciar`);
       return;
     }
   }
@@ -1258,7 +1258,7 @@ async function handleLaunch() {
   state.launchInProgress = true;
   setWorkspaceControlsDisabled(true);
   updateStopButtonState();
-  addFeedEvent('mission', 'decompondo missao e preparando agentes');
+  addFeedEvent('mission', `iniciando ${agentCount} terminal(is) independente(s) com o mesmo problema`);
 
   try {
     const result = await window.swarm.orchestration.launch({
@@ -1292,7 +1292,7 @@ function handleSwarmEvent(event) {
     state.launchInProgress = false;
     const tasks = Array.isArray(event.tasks) ? event.tasks : [];
     state.panes = createPanesForTasks(tasks);
-    addFeedEvent('mission', event.message || 'swarm iniciado');
+    addFeedEvent('mission', event.message || 'terminais iniciados');
     showLaunchOverlay(tasks, event.runtime || state.activeWorkspace?.runtime);
     renderWorkspace();
     updateStopButtonState();
@@ -1304,7 +1304,7 @@ function handleSwarmEvent(event) {
       status: event.status || 'THINKING',
       taskTitle: event.task?.title || event.message || ''
     });
-    addFeedEvent('agent', event.message || `agente ${event.paneId} iniciado`);
+    addFeedEvent('agent', event.message || `terminal ${event.paneId} iniciado`);
     fadeLaunchOverlaySoon();
     return;
   }
@@ -1319,16 +1319,16 @@ function handleSwarmEvent(event) {
 
   if (event.type === 'agent:exit') {
     updatePane(event.paneId, { status: event.status || 'DONE' });
-    addFeedEvent(event.status === 'ERROR' ? 'error' : 'agent', event.message || `agente ${event.paneId} finalizado`);
+    addFeedEvent(event.status === 'ERROR' ? 'error' : 'agent', event.message || `terminal ${event.paneId} finalizado`);
     return;
   }
 
   if (event.type === 'agent:error') {
     updatePane(event.paneId, {
       status: 'ERROR',
-      output: [`${sanitizeVisibleText(event.message || event.error || 'erro no agente')}\n`]
+      output: [`${sanitizeVisibleText(event.message || event.error || 'erro no terminal')}\n`]
     });
-    addFeedEvent('error', event.message || event.error || 'erro no agente');
+    addFeedEvent('error', event.message || event.error || 'erro no terminal');
     hideLaunchOverlay();
     return;
   }
@@ -1346,7 +1346,7 @@ function handleSwarmEvent(event) {
     state.missionActive = false;
     state.launchInProgress = false;
     hideLaunchOverlay();
-    addFeedEvent(event.status === 'ERROR' ? 'error' : 'mission', event.message || 'missao concluida');
+    addFeedEvent(event.status === 'ERROR' ? 'error' : 'mission', event.message || 'terminais concluidos');
     setWorkspaceControlsDisabled(false);
     renderNodePanel();
     updateStopButtonState();
@@ -1357,7 +1357,7 @@ function handleSwarmEvent(event) {
     state.missionActive = false;
     state.launchInProgress = false;
     hideLaunchOverlay();
-    addFeedEvent('error', event.message || 'erro na missao');
+    addFeedEvent('error', event.message || 'erro nos terminais');
     setWorkspaceControlsDisabled(false);
     updateStopButtonState();
     return;
@@ -1367,7 +1367,7 @@ function handleSwarmEvent(event) {
     state.missionActive = false;
     state.launchInProgress = false;
     hideLaunchOverlay();
-    addFeedEvent('process', event.message || 'swarm parado');
+    addFeedEvent('process', event.message || 'terminais parados');
     setWorkspaceControlsDisabled(false);
     updateStopButtonState();
     return;
@@ -1457,7 +1457,7 @@ function showLaunchOverlay(tasks, runtimeId) {
       const item = document.createElement('li');
       item.className = 'launch-task';
       item.style.animationDelay = `${index * 90}ms`;
-      item.textContent = task.title || `Agente ${index + 1}`;
+      item.textContent = task.title || `Terminal ${index + 1}`;
       taskList.appendChild(item);
     });
   }
@@ -1508,7 +1508,7 @@ function setWorkspaceControlsDisabled(disabled) {
   }
   const launchButton = getElement('launch-swarm-button');
   if (launchButton) {
-    launchButton.textContent = disabled ? 'AVANT IA ATIVO' : 'LAUNCH AVANT IA';
+    launchButton.textContent = disabled ? 'TERMINAIS ATIVOS' : 'INICIAR TERMINAIS';
   }
   updateStopButtonState();
 }

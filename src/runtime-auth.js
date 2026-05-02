@@ -3,6 +3,19 @@
 const { spawn, spawnSync } = require('child_process');
 const { RUNTIMES } = require('./runtimes');
 
+function spawnVersion(command) {
+  const isWindowsCmd = process.platform === 'win32' && /\.cmd$/i.test(command);
+  const executable = isWindowsCmd ? 'cmd.exe' : command;
+  const args = isWindowsCmd ? ['/d', '/s', '/c', command, '--version'] : ['--version'];
+
+  return spawnSync(executable, args, {
+    shell: false,
+    encoding: 'utf8',
+    timeout: 8000,
+    windowsHide: true
+  });
+}
+
 function checkRuntime(runtimeId) {
   const runtime = RUNTIMES[runtimeId];
   if (!runtime) {
@@ -14,12 +27,7 @@ function checkRuntime(runtimeId) {
     };
   }
 
-  const result = spawnSync(runtime.cmd, ['--version'], {
-    shell: true,
-    encoding: 'utf8',
-    timeout: 8000,
-    windowsHide: true
-  });
+  const result = spawnVersion(runtime.cmd);
 
   const output = `${result.stdout || ''}${result.stderr || ''}`.trim();
   const ok = result.status === 0 && output.length > 0;
@@ -28,8 +36,11 @@ function checkRuntime(runtimeId) {
     runtime: runtimeId,
     label: runtime.label,
     available: ok,
-    status: ok ? 'ready' : 'missing',
-    message: ok ? output : `${runtime.label} nao encontrado no PATH. Instale primeiro.`
+    authenticated: null,
+    status: ok ? 'available' : 'missing',
+    message: ok
+      ? `${output}. CLI disponivel; autentique no terminal se a conta ainda nao estiver logada.`
+      : `${runtime.label} nao encontrado no PATH. Instale primeiro.`
   };
 }
 

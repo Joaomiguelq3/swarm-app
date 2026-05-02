@@ -152,16 +152,16 @@ function registerSwarmIpc({
       if (event.type === 'mission:start') {
         const label = event.runtime === 'claude' ? 'Claude Code' : event.runtime === 'codex' ? 'Codex' : event.runtime;
         const count = Array.isArray(event.tasks) ? event.tasks.length : 0;
-        speakBestEffort(`AVANT IA iniciado com ${label}. ${count} agentes em paralelo.`);
+        speakBestEffort(`AVANT IA iniciado com ${label}. ${count} terminais em paralelo.`);
       }
       if (event.type === 'agent:exit' && event.status === 'DONE') {
-        speakBestEffort(`Agente ${event.paneId || ''} concluido.`);
+        speakBestEffort(`Terminal ${event.paneId || ''} concluido.`);
       }
       if (event.type === 'agent:exit' && event.status === 'ERROR') {
-        speakBestEffort(`Erro no agente ${event.paneId || ''}.`);
+        speakBestEffort(`Erro no terminal ${event.paneId || ''}.`);
       }
       if (event.type === 'mission:done') {
-        speakBestEffort(event.status === 'DONE' ? 'Missao concluida.' : 'Missao concluida com erros.');
+        speakBestEffort(event.status === 'DONE' ? 'Terminais concluidos.' : 'Terminais concluidos com erros.');
         if (active && active.swarm === swarm) {
           stopActive('mission-complete').catch((error) => {
             send({

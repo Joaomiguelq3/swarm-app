@@ -35,13 +35,14 @@ function decomposeMission(input = {}) {
     return {
       id: `agent-${agentId}`,
       paneId: agentId,
-      title: `Agente ${agentId}: executar fatia ${agentId}/${agentCount}`,
+      title: `Terminal ${agentId}: sessao independente`,
       prompt: [
         `Runtime: ${runtime}`,
         `Modelo: ${model}`,
-        `Missao geral: ${mission}`,
-        `Voce e o agente ${agentId} de ${agentCount}.`,
-        'Trabalhe em uma parte independente da missao, evite conflitos com outros agentes e relate arquivos alterados.',
+        `Problema compartilhado: ${mission}`,
+        `Voce esta no terminal ${agentId} de ${agentCount}, rodando no mesmo projeto que os outros terminais.`,
+        'Trabalhe de forma independente. Nao assuma que outro terminal vai executar sua parte.',
+        'Antes de editar arquivos, considere conflitos com outros terminais ativos e relate claramente o que alterou.',
         '',
         'Contexto do projeto:',
         scoutContext
@@ -114,8 +115,8 @@ function createSwarm(options = {}) {
       status,
       exitCode: code,
       message: status === STATUS.DONE
-        ? `Agente ${agentId} concluido.`
-        : `Agente ${agentId} falhou com codigo ${code}.`
+        ? `Terminal ${paneId} concluido.`
+        : `Terminal ${paneId} falhou com codigo ${code}.`
     });
 
     if (mission && mission.completed >= mission.total) {
@@ -125,8 +126,8 @@ function createSwarm(options = {}) {
         missionId,
         status: missionStatus,
         message: missionStatus === STATUS.DONE
-          ? 'Missao concluida.'
-          : `Missao concluida com ${mission.errors} erro(s).`
+          ? 'Terminais concluidos.'
+          : `Terminais concluidos com ${mission.errors} erro(s).`
       });
       activeMission = null;
     }
@@ -229,7 +230,7 @@ function createSwarm(options = {}) {
           paneId: task.paneId,
           status: STATUS.ERROR,
           error: error.message,
-          message: `Erro ao iniciar ${task.title}: ${error.message}`
+        message: `Erro ao iniciar ${task.title}: ${error.message}`
         });
         markAgentExit(missionId, agentId, task.paneId, { exitCode: 1 });
       }
@@ -263,7 +264,7 @@ function createSwarm(options = {}) {
           agentId,
           status: STATUS.ERROR,
           error: error.message,
-          message: `Erro ao parar ${agentId}: ${error.message}`
+        message: `Erro ao parar ${agentId}: ${error.message}`
         });
       }
     }
@@ -274,7 +275,7 @@ function createSwarm(options = {}) {
         missionId,
         status: STATUS.IDLE,
         reason,
-        message: `AVANT IA parado: ${reason}.`
+        message: `Terminais parados: ${reason}.`
       });
       activeMission = null;
     }

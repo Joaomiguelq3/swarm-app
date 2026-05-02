@@ -9,13 +9,15 @@ let mainWindow = null;
 let swarmIpc = null;
 let cleanupStarted = false;
 const appIconPath = path.join(__dirname, 'assets', 'app-icon.png');
+const appIconIcoPath = path.join(__dirname, 'assets', 'app-icon.ico');
 
 app.setName('AVANT IA');
 app.setAppUserModelId('com.avantia.desktop');
 
 function getAppIcon() {
-  const icon = nativeImage.createFromPath(appIconPath);
-  return icon.isEmpty() ? appIconPath : icon;
+  const iconPath = process.platform === 'win32' ? appIconIcoPath : appIconPath;
+  const icon = nativeImage.createFromPath(iconPath);
+  return icon.isEmpty() ? iconPath : icon;
 }
 
 function stopSwarmFor(reason) {

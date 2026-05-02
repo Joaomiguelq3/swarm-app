@@ -17,7 +17,7 @@ assert(app.includes('fadeLaunchOverlaySoon'), 'overlay fade driver missing');
 assert(app.includes('hideLaunchOverlay'), 'overlay cleanup missing');
 assert(app.includes('createRuntimeBadge(runtime)'), 'overlay must render runtime badge');
 assert(ipc.includes('AVANT IA iniciado com'), 'start TTS message missing');
-assert(ipc.includes('Agente') && ipc.includes('concluido'), 'agent completion TTS missing');
-assert(ipc.includes('Missao concluida'), 'mission completion TTS missing');
+assert(ipc.includes('Terminal') && ipc.includes('concluido'), 'terminal completion TTS missing');
+assert(ipc.includes('Terminais concluidos'), 'terminal completion TTS missing');
 
 console.log('smoke-launch-overlay ok');
