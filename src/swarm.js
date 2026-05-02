@@ -56,8 +56,35 @@ function decomposeMission(input = {}) {
   });
 }
 
+function quoteCmdArg(value) {
+  const text = String(value || '');
+  if (/^[a-zA-Z0-9_./:=+-]+$/.test(text)) {
+    return text;
+  }
+  return `"${text.replace(/"/g, '\\"')}"`;
+}
+
+function getPtyCommand(runtime) {
+  if (process.platform !== 'win32') {
+    return {
+      cmd: runtime.cmd,
+      args: runtime.args
+    };
+  }
+
+  const runtimeCommand = [runtime.cmd, ...(runtime.args || [])]
+    .map(quoteCmdArg)
+    .join(' ');
+
+  return {
+    cmd: 'cmd.exe',
+    args: ['/d', '/s', '/k', runtimeCommand]
+  };
+}
+
 function defaultSpawnAdapter({ runtime, cwd }) {
-  const pty = nodePty.spawn(runtime.cmd, runtime.args, {
+  const command = getPtyCommand(runtime);
+  const pty = nodePty.spawn(command.cmd, command.args, {
     cwd,
     env: process.env,
     name: 'xterm-color',

@@ -7,10 +7,15 @@ const { registerSwarmIpc, CHANNELS } = require('../src/swarm-ipc');
 class IpcMainFake {
   constructor() {
     this.handlers = new Map();
+    this.listeners = new Map();
   }
 
   handle(channel, handler) {
     this.handlers.set(channel, handler);
+  }
+
+  on(channel, listener) {
+    this.listeners.set(channel, listener);
   }
 
   invoke(channel, input) {

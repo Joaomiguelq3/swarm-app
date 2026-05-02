@@ -134,6 +134,7 @@ function mountPaneTerminal(pane, mount) {
   }
 
   const size = getTerminalSize(mount);
+  const runtime = getRuntimeView(state.activeWorkspace?.runtime);
   const terminal = new TerminalCtor({
     convertEol: true,
     cursorBlink: true,
@@ -158,8 +159,18 @@ function mountPaneTerminal(pane, mount) {
     }
   });
 
+  mount.tabIndex = 0;
+  mount.setAttribute('role', 'textbox');
+  mount.setAttribute('aria-label', `Terminal ${pane.id}`);
   terminal.open(mount);
-  mount.addEventListener('pointerdown', () => terminal.focus());
+  const focusTerminal = () => {
+    terminal.focus();
+  };
+  mount.addEventListener('pointerdown', focusTerminal);
+  mount.addEventListener('click', focusTerminal);
+  if (terminal.element) {
+    terminal.element.addEventListener('pointerdown', focusTerminal);
+  }
   terminal.onData((data) => {
     if (
       window.swarm &&
@@ -171,14 +182,19 @@ function mountPaneTerminal(pane, mount) {
   });
 
   terminalInstances.set(Number(pane.id), { terminal, mount });
-  window.setTimeout(() => resizePaneTerminal(pane.id), 0);
+  window.setTimeout(() => {
+    resizePaneTerminal(pane.id);
+    if (pane.id === 1) {
+      terminal.focus();
+    }
+  }, 0);
 
   if (Array.isArray(pane.output) && pane.output.length > 0) {
     terminal.write(pane.output.join(''));
   } else {
     terminal.writeln(pane.id === 1
-      ? 'Codex pronto para iniciar o novo projeto...'
-      : 'Codex aberto no mesmo projeto, pronto para uso manual...');
+      ? `${runtime.label} pronto para iniciar o novo projeto...`
+      : `${runtime.label} aberto no mesmo projeto, pronto para uso manual...`);
   }
 }
 

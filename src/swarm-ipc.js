@@ -216,6 +216,13 @@ function registerSwarmIpc({
     return active.swarm.writeToPane(input.paneId, input.data);
   });
 
+  ipcMain.on(CHANNELS.input, (_event, input = {}) => {
+    if (!active || !active.swarm) {
+      return;
+    }
+    active.swarm.writeToPane(input.paneId, input.data);
+  });
+
   ipcMain.handle(CHANNELS.resize, async (_event, input = {}) => {
     if (!active || !active.swarm) {
       return { ok: false, error: 'Nenhum terminal ativo.' };
