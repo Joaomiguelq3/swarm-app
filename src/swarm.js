@@ -1,7 +1,7 @@
 const { EventEmitter } = require('events');
 const nodePty = require('node-pty');
 const { scoutProject } = require('./scout');
-const { getRuntime } = require('./runtimes');
+const { getDefaultModel, getRuntime } = require('./runtimes');
 
 const STATUS = {
   IDLE: 'IDLE',
@@ -151,7 +151,8 @@ function createSwarm(options = {}) {
 
     const runtimeId = input.runtime || workspace.runtime || 'codex';
     const runtime = input.runtimeConfig || options.runtime || getRuntime(runtimeId);
-    const model = input.model || workspace.model || runtime.models?.[0] || 'default';
+    const model = input.model || workspace.model || getDefaultModel(runtime);
+    const decompositionModel = runtime.decompositionModel || getDefaultModel(runtime);
     const agentCount = clampAgentCount(input.agentCount);
     const missionId = `mission-${Date.now()}`;
     const scoutResult = scout(workspacePath);
@@ -161,6 +162,7 @@ function createSwarm(options = {}) {
       agentCount,
       runtime: runtime.id || runtimeId,
       model,
+      decompositionModel,
       scoutContext
     });
 
@@ -178,6 +180,7 @@ function createSwarm(options = {}) {
       mission,
       runtime: runtime.id || runtimeId,
       model,
+      decompositionModel,
       tasks,
       message: `Swarm iniciado com ${runtime.label || runtime.id || runtimeId}.`
     });

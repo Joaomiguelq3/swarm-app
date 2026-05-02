@@ -32,7 +32,7 @@ function main() {
   assert.strictEqual(result.workspace.name, path.basename(workspacePath));
   assert.strictEqual(result.workspace.path, workspacePath);
   assert.strictEqual(result.workspace.runtime, 'codex');
-  assert.strictEqual(result.workspace.model, 'gpt-4o');
+  assert.strictEqual(result.workspace.model, 'gpt-5.5');
   assert.ok(result.workspace.lastAccess, 'lastAccess should exist');
 
   assert.ok(fs.existsSync(getStorePath({ appDataPath })), 'workspaces.json should exist');
@@ -52,7 +52,7 @@ function main() {
   });
 
   assert.strictEqual(switched.workspace.runtime, 'claude');
-  assert.strictEqual(switched.workspace.model, 'opus-4');
+  assert.strictEqual(switched.workspace.model, 'claude-sonnet-4-6');
   assert.ok(fs.existsSync(path.join(workspacePath, 'CLAUDE.md')), 'CLAUDE.md should exist after switch');
   assert.strictEqual(read(path.join(workspacePath, 'brain.json')), originalBrain);
   assert.strictEqual(read(path.join(workspacePath, 'AGENTS.md')), originalAgents);

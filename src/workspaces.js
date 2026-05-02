@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { getRuntime } = require('./runtimes');
+const { getDefaultModel, getModelIds, getRuntime } = require('./runtimes');
 
 const STORE_FILE = 'workspaces.json';
 const SCHEMA_FIELDS = ['id', 'name', 'path', 'runtime', 'model', 'lastAccess'];
@@ -253,11 +253,11 @@ function normalizeWorkspaceRecord(record) {
 
 function resolveModel(runtime, model) {
   if (!model) {
-    return runtime.models[0];
+    return getDefaultModel(runtime);
   }
 
-  if (!runtime.models.includes(model)) {
-    throw new Error(`Unknown model for ${runtime.id}: ${model}`);
+  if (!getModelIds(runtime).includes(model)) {
+    return getDefaultModel(runtime);
   }
 
   return model;

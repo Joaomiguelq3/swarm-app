@@ -407,6 +407,16 @@ select:focus-visible {
   border-color: var(--green);
 }
 
+.path-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.path-picker .button {
+  min-width: 104px;
+}
+
 .field select,
 .mission-field input,
 .agent-count-field input {
@@ -917,6 +927,61 @@ dd {
   display: grid;
   align-content: start;
   gap: 14px;
+}
+
+.runtime-account-panel {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg3);
+  padding: 10px;
+}
+
+.runtime-account-header,
+.runtime-account-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.runtime-account-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.account-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.account-ready {
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green-dim);
+}
+
+.account-missing,
+.account-error {
+  background: var(--red);
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.24);
+}
+
+.runtime-account-status {
+  min-height: 36px;
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.runtime-account-actions .button {
+  flex: 1;
+  min-width: 0;
 }
 
 .node-facts {

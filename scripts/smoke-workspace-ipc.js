@@ -51,7 +51,7 @@ async function main() {
   });
 
   assert.strictEqual(created.workspace.runtime, 'codex');
-  assert.strictEqual(created.workspace.model, 'gpt-4o');
+  assert.strictEqual(created.workspace.model, 'gpt-5.5');
 
   const listed = await ipcMain.invoke(CHANNELS.list);
   assert.strictEqual(listed.length, 1);
@@ -59,17 +59,17 @@ async function main() {
 
   const modelUpdated = await ipcMain.invoke(CHANNELS.updateModel, {
     id: created.workspace.id,
-    model: 'gpt-4.1'
+    model: 'gpt-5.4'
   });
-  assert.strictEqual(modelUpdated.workspace.model, 'gpt-4.1');
+  assert.strictEqual(modelUpdated.workspace.model, 'gpt-5.4');
 
   const runtimeUpdated = await ipcMain.invoke(CHANNELS.updateRuntime, {
     id: created.workspace.id,
     runtime: 'claude',
-    model: 'sonnet-4'
+    model: 'claude-opus-4-7'
   });
   assert.strictEqual(runtimeUpdated.workspace.runtime, 'claude');
-  assert.strictEqual(runtimeUpdated.workspace.model, 'sonnet-4');
+  assert.strictEqual(runtimeUpdated.workspace.model, 'claude-opus-4-7');
   assert.ok(fs.existsSync(path.join(workspacePath, 'CLAUDE.md')));
   assert.ok(fs.existsSync(path.join(workspacePath, 'AGENTS.md')));
 

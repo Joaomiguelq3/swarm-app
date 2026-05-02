@@ -56,13 +56,16 @@ function main() {
   includes(js, 'window.swarm.workspaces.touch', 'workspace touch bridge usage');
   includes(js, 'window.swarm.workspaces.updateRuntime', 'runtime update bridge usage');
   includes(js, 'window.swarm.workspaces.updateModel', 'model update bridge usage');
+  includes(js, 'window.swarm.runtimes.list', 'runtime catalog bridge usage');
+  includes(js, 'window.swarm.runtimes.login', 'runtime login bridge usage');
   includes(js, 'stopActiveProcesses', 'stop hook');
   includes(js, "await stopActiveProcesses('runtime-switch')", 'stop before runtime persistence');
   includes(js, 'renderModelOptions', 'runtime model option renderer');
+  includes(js, 'getModelLabel', 'model metadata label renderer');
   includes(js, 'handleLaunch', 'real launch handler');
 
-  for (const model of ['opus-4', 'sonnet-4', 'haiku', 'gpt-4o', 'gpt-4.1', 'o3', 'o4-mini']) {
-    includes(js, model, `model option ${model}`);
+  for (const oldModel of ['gpt-4o', 'gpt-5.2', 'claude-3-', 'latest']) {
+    assert.ok(!js.includes(oldModel), `renderer should not hardcode old model marker: ${oldModel}`);
   }
 
   for (const status of ['IDLE', 'THINKING', 'WRITING', 'DONE', 'ERROR']) {

@@ -3,13 +3,15 @@ const RUNTIME_VIEW = {
     id: 'claude',
     label: 'CLAUDE CODE',
     badgeClass: 'badge-claude',
-    models: ['opus-4', 'sonnet-4', 'haiku']
+    models: [],
+    defaultModel: ''
   },
   codex: {
     id: 'codex',
     label: 'CODEX',
     badgeClass: 'badge-codex',
-    models: ['gpt-4o', 'gpt-4.1', 'o3', 'o4-mini']
+    models: [],
+    defaultModel: ''
   }
 };
 
@@ -17,12 +19,15 @@ const PANE_STATUSES = ['IDLE', 'THINKING', 'WRITING', 'DONE', 'ERROR'];
 
 const state = {
   workspaces: [],
+  runtimes: {},
   loading: true,
   activeWorkspace: null,
   panes: createDefaultPanes(),
   feed: [],
   missionActive: false,
   launchInProgress: false,
+  runtimeStatus: null,
+  runtimeStatusLoading: false,
   swarmUnsubscribe: null,
   overlayTimer: null
 };
@@ -54,12 +59,39 @@ function clearChildren(id) {
 }
 
 function getRuntimeView(runtimeId) {
+  const runtime = state.runtimes[runtimeId];
+  if (runtime) {
+    return {
+      id: runtime.id || runtimeId,
+      label: runtime.label || String(runtimeId).toUpperCase(),
+      badgeClass: runtime.badge?.className || RUNTIME_VIEW[runtimeId]?.badgeClass || 'runtime-badge',
+      models: Array.isArray(runtime.models) ? runtime.models : [],
+      defaultModel: runtime.defaultModel || getModelId(runtime.models?.[0]) || ''
+    };
+  }
+
   return RUNTIME_VIEW[runtimeId] || {
     id: runtimeId || 'unknown',
     label: String(runtimeId || 'RUNTIME').toUpperCase(),
     badgeClass: 'runtime-badge',
-    models: []
+    models: [],
+    defaultModel: ''
   };
+}
+
+function getModelId(model) {
+  return typeof model === 'string' ? model : model?.id || '';
+}
+
+function getModelLabel(model) {
+  if (!model || typeof model === 'string') {
+    return String(model || 'default');
+  }
+  return model.desc ? `${model.label || model.id} - ${model.desc}` : model.label || model.id;
+}
+
+function getModelIds(models) {
+  return Array.isArray(models) ? models.map(getModelId).filter(Boolean) : [];
 }
 
 function createDefaultPanes() {
@@ -190,6 +222,20 @@ function hasWorkspaceBridge(method) {
     window.swarm.workspaces &&
     typeof window.swarm.workspaces[method] === 'function'
   );
+}
+
+async function loadRuntimeCatalog() {
+  if (!hasRuntimeBridge('list')) {
+    state.runtimes = {};
+    return;
+  }
+
+  try {
+    state.runtimes = await window.swarm.runtimes.list();
+  } catch (error) {
+    state.runtimes = {};
+    addFeedEvent('error', error.message || 'erro ao carregar runtimes');
+  }
 }
 
 function showLoading() {
@@ -352,6 +398,42 @@ function bindModalEvents() {
   if (form) {
     form.addEventListener('submit', createWorkspace);
   }
+
+  const folderButton = getElement('select-workspace-folder');
+  if (folderButton) {
+    folderButton.addEventListener('click', selectWorkspaceFolder);
+  }
+}
+
+async function selectWorkspaceFolder() {
+  if (!hasWorkspaceBridge('selectDirectory')) {
+    showFormError('seletor de pasta indisponivel');
+    return;
+  }
+
+  const button = getElement('select-workspace-folder');
+  const input = getElement('workspace-path');
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'abrindo...';
+  }
+
+  try {
+    const result = await window.swarm.workspaces.selectDirectory();
+    if (result && !result.canceled && result.path && input) {
+      input.value = result.path;
+      input.focus();
+      setHidden('form-error', true);
+    }
+  } catch (error) {
+    showFormError(error.message || 'erro ao selecionar pasta');
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = 'escolher';
+    }
+  }
 }
 
 async function createWorkspace(event) {
@@ -416,6 +498,7 @@ async function initWorkspace() {
   showWorkspaceLoading();
   bindWorkspaceEvents();
   subscribeToOrchestration();
+  await loadRuntimeCatalog();
 
   if (!hasWorkspaceBridge('list')) {
     showWorkspaceError('workspace bridge missing');
@@ -445,6 +528,7 @@ async function initWorkspace() {
     showWorkspaceContent();
     addFeedEvent('workspace', `workspace carregado: ${state.activeWorkspace.name}`);
     renderWorkspace();
+    refreshRuntimeStatus(false);
   } catch (error) {
     showWorkspaceError(error.message || 'erro ao abrir workspace');
   }
@@ -501,6 +585,16 @@ function bindWorkspaceEvents() {
   if (stopButton) {
     stopButton.addEventListener('click', handleStopSwarm);
   }
+
+  const loginButton = getElement('runtime-login-button');
+  if (loginButton) {
+    loginButton.addEventListener('click', handleRuntimeLogin);
+  }
+
+  const checkButton = getElement('runtime-check-button');
+  if (checkButton) {
+    checkButton.addEventListener('click', () => refreshRuntimeStatus(true));
+  }
 }
 
 function hasOrchestrationBridge(method) {
@@ -534,6 +628,7 @@ function renderWorkspace() {
   renderPanes();
   renderRuntimeControls();
   renderNodePanel();
+  renderRuntimeAccount();
   renderFeed();
   updateStopButtonState();
 }
@@ -668,11 +763,15 @@ function renderRuntimeControls() {
   const runtimeSelect = getElement('runtime-select');
   if (runtimeSelect) {
     runtimeSelect.replaceChildren();
-    for (const runtime of Object.values(RUNTIME_VIEW)) {
+    const runtimes = Object.keys(state.runtimes).length > 0
+      ? Object.values(state.runtimes)
+      : Object.values(RUNTIME_VIEW);
+    for (const runtime of runtimes) {
+      const runtimeView = getRuntimeView(runtime.id);
       const option = document.createElement('option');
-      option.value = runtime.id;
-      option.textContent = runtime.label;
-      option.selected = runtime.id === workspace.runtime;
+      option.value = runtimeView.id;
+      option.textContent = runtimeView.label;
+      option.selected = runtimeView.id === workspace.runtime;
       runtimeSelect.appendChild(option);
     }
   }
@@ -687,15 +786,17 @@ function renderModelOptions(runtimeId, selectedModel) {
     return;
   }
 
-  const models = runtime.models.length > 0 ? runtime.models : [selectedModel || 'default'];
-  const nextModel = models.includes(selectedModel) ? selectedModel : models[0];
+  const models = runtime.models.length > 0 ? runtime.models : [{ id: selectedModel || 'default' }];
+  const modelIds = getModelIds(models);
+  const nextModel = modelIds.includes(selectedModel) ? selectedModel : runtime.defaultModel || modelIds[0];
   modelSelect.replaceChildren();
 
   for (const model of models) {
+    const modelId = getModelId(model);
     const option = document.createElement('option');
-    option.value = model;
-    option.textContent = model;
-    option.selected = model === nextModel;
+    option.value = modelId;
+    option.textContent = getModelLabel(model);
+    option.selected = modelId === nextModel;
     modelSelect.appendChild(option);
   }
 }
@@ -717,6 +818,131 @@ function renderNodePanel() {
   const badgeSlot = clearChildren('node-runtime-badge');
   if (badgeSlot) {
     badgeSlot.appendChild(createRuntimeBadge(runtime));
+  }
+}
+
+function hasRuntimeBridge(method) {
+  return Boolean(
+    window.swarm &&
+    window.swarm.runtimes &&
+    typeof window.swarm.runtimes[method] === 'function'
+  );
+}
+
+function renderRuntimeAccount() {
+  const workspace = state.activeWorkspace;
+  if (!workspace) {
+    return;
+  }
+
+  const runtime = getRuntimeView(workspace.runtime);
+  const status = state.runtimeStatus && state.runtimeStatus.runtime === workspace.runtime
+    ? state.runtimeStatus
+    : null;
+  const statusKind = state.runtimeStatusLoading ? 'unknown' : status?.status || 'unknown';
+
+  setText('runtime-account-title', runtime.label);
+  setText('runtime-account-status', getRuntimeStatusText(runtime, status, state.runtimeStatusLoading));
+
+  const dot = getElement('runtime-account-dot');
+  if (dot) {
+    dot.className = `account-dot account-${statusKind}`;
+  }
+
+  const loginButton = getElement('runtime-login-button');
+  if (loginButton) {
+    loginButton.textContent = status?.status === 'ready' ? 'conectado' : `login ${runtime.label}`;
+    loginButton.disabled = state.runtimeStatusLoading;
+  }
+
+  const checkButton = getElement('runtime-check-button');
+  if (checkButton) {
+    checkButton.disabled = state.runtimeStatusLoading;
+    checkButton.textContent = state.runtimeStatusLoading ? 'verificando...' : 'verificar';
+  }
+}
+
+function getRuntimeStatusText(runtime, status, loading) {
+  if (loading) {
+    return `verificando ${runtime.label} no PATH...`;
+  }
+  if (!hasRuntimeBridge('status')) {
+    return 'bridge de runtime indisponivel';
+  }
+  if (!status || status.runtime !== runtime.id) {
+    return `clique em verificar para validar ${runtime.label}`;
+  }
+  if (status.status === 'ready') {
+    return `${runtime.label} pronto: ${status.message}`;
+  }
+  if (status.status === 'missing') {
+    return `${runtime.label} nao encontrado. Clique em login depois confirme se o CLI esta instalado no PATH.`;
+  }
+  return `${runtime.label}: ${status.message || 'erro ao verificar runtime'}`;
+}
+
+async function refreshRuntimeStatus(reportToFeed = false) {
+  const workspace = state.activeWorkspace;
+  if (!workspace || !hasRuntimeBridge('status')) {
+    return;
+  }
+
+  state.runtimeStatusLoading = true;
+  renderRuntimeAccount();
+
+  try {
+    const result = await window.swarm.runtimes.status(workspace.runtime);
+    state.runtimeStatus = result;
+    if (reportToFeed) {
+      addFeedEvent(result.status === 'ready' ? 'runtime' : 'error', result.message);
+    }
+  } catch (error) {
+    state.runtimeStatus = {
+      runtime: workspace.runtime,
+      status: 'error',
+      message: error.message || 'erro ao verificar runtime'
+    };
+    if (reportToFeed) {
+      addFeedEvent('error', state.runtimeStatus.message);
+    }
+  } finally {
+    state.runtimeStatusLoading = false;
+    renderRuntimeAccount();
+  }
+}
+
+async function handleRuntimeLogin() {
+  const workspace = state.activeWorkspace;
+  if (!workspace || !hasRuntimeBridge('login')) {
+    addFeedEvent('error', 'login de runtime indisponivel');
+    return;
+  }
+
+  const loginButton = getElement('runtime-login-button');
+  const runtime = getRuntimeView(workspace.runtime);
+  if (loginButton) {
+    loginButton.disabled = true;
+    loginButton.textContent = 'abrindo terminal...';
+  }
+  addFeedEvent('runtime', `abrindo terminal de login para ${runtime.label}`);
+
+  try {
+    const result = await window.swarm.runtimes.login(workspace.runtime);
+    if (result && result.ok) {
+      addFeedEvent('runtime', result.message || `terminal aberto para ${result.label || runtime.label}`);
+      addFeedEvent('runtime', 'depois de autenticar no browser, clique em verificar');
+    } else {
+      addFeedEvent('error', result?.error || 'erro ao abrir login do runtime');
+    }
+    renderRuntimeAccount();
+  } catch (error) {
+    addFeedEvent('error', error.message || 'erro ao abrir login do runtime');
+  } finally {
+    if (loginButton) {
+      loginButton.disabled = false;
+      loginButton.textContent = 'verificar';
+      loginButton.onclick = () => refreshRuntimeStatus(true);
+    }
   }
 }
 
@@ -776,8 +1002,10 @@ async function handleRuntimeChange(event) {
     await stopActiveProcesses('runtime-switch');
     const result = await window.swarm.workspaces.updateRuntime(workspace.id, nextRuntime, nextModel);
     applyWorkspaceResult(result);
+    state.runtimeStatus = null;
     addFeedEvent('runtime', `runtime alterado para ${getRuntimeView(nextRuntime).label}`);
     renderWorkspace();
+    refreshRuntimeStatus(false);
   } catch (error) {
     addFeedEvent('error', error.message || 'erro ao trocar runtime');
     renderWorkspace();
@@ -810,10 +1038,11 @@ async function handleModelChange(event) {
 function resolveModelForRuntime(runtimeId) {
   const runtime = getRuntimeView(runtimeId);
   const modelSelect = getElement('model-select');
-  if (modelSelect && runtime.models.includes(modelSelect.value)) {
+  const modelIds = getModelIds(runtime.models);
+  if (modelSelect && modelIds.includes(modelSelect.value)) {
     return modelSelect.value;
   }
-  return runtime.models[0];
+  return runtime.defaultModel || modelIds[0] || 'default';
 }
 
 async function stopActiveProcesses(reason) {
@@ -861,6 +1090,13 @@ async function handleLaunch() {
   if (!hasOrchestrationBridge('launch')) {
     addFeedEvent('error', 'orchestration bridge missing');
     return;
+  }
+  if (hasRuntimeBridge('status')) {
+    await refreshRuntimeStatus(false);
+    if (!state.runtimeStatus || state.runtimeStatus.runtime !== workspace.runtime || state.runtimeStatus.status !== 'ready') {
+      addFeedEvent('error', `faça login/verifique ${getRuntimeView(workspace.runtime).label} antes do launch`);
+      return;
+    }
   }
 
   state.launchInProgress = true;
@@ -1108,7 +1344,7 @@ function hideLaunchOverlay() {
 }
 
 function setWorkspaceControlsDisabled(disabled) {
-  for (const id of ['runtime-select', 'model-select', 'launch-swarm-button']) {
+  for (const id of ['runtime-select', 'model-select', 'launch-swarm-button', 'runtime-login-button', 'runtime-check-button']) {
     const control = getElement(id);
     if (control) {
       control.disabled = disabled;

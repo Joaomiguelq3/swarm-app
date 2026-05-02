@@ -65,7 +65,10 @@
         <form id="workspace-form" class="workspace-form">
           <label class="field">
             <span>Path da pasta</span>
-            <input id="workspace-path" name="path" type="text" autocomplete="off" placeholder="C:\projetos\meu-projeto" required>
+            <div class="path-picker">
+              <input id="workspace-path" name="path" type="text" autocomplete="off" placeholder="C:\projetos\meu-projeto" required>
+              <button id="select-workspace-folder" class="button button-secondary" type="button">escolher</button>
+            </div>
           </label>
 
           <fieldset class="field">

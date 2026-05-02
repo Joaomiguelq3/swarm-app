@@ -1,11 +1,21 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, nativeImage } = require('electron');
 const path = require('path');
+const { registerRuntimeAuthIpc } = require('./src/runtime-auth-ipc');
 const { registerWorkspaceIpc } = require('./src/workspace-ipc');
 const { registerSwarmIpc } = require('./src/swarm-ipc');
 
 let mainWindow = null;
 let swarmIpc = null;
 let cleanupStarted = false;
+const appIconPath = path.join(__dirname, 'assets', 'app-icon.png');
+
+app.setName('SWARM');
+app.setAppUserModelId('com.swarm.desktop');
+
+function getAppIcon() {
+  const icon = nativeImage.createFromPath(appIconPath);
+  return icon.isEmpty() ? appIconPath : icon;
+}
 
 function stopSwarmFor(reason) {
   if (!swarmIpc || cleanupStarted) {
@@ -18,11 +28,13 @@ function stopSwarmFor(reason) {
 }
 
 function createWindow() {
+  const appIcon = getAppIcon();
   mainWindow = new BrowserWindow({
     width: 1180,
     height: 760,
     minWidth: 920,
     minHeight: 620,
+    icon: appIcon,
     backgroundColor: '#0a0a0a',
     show: false,
     webPreferences: {
@@ -33,6 +45,7 @@ function createWindow() {
   });
 
   mainWindow.once('ready-to-show', () => {
+    mainWindow.setIcon(appIcon);
     mainWindow.show();
   });
 
@@ -53,7 +66,21 @@ ipcMain.handle('swarm:get-app-info', () => ({
   status: 'foundation-ready'
 }));
 
+ipcMain.handle('swarm:dialog:select-directory', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: 'Selecionar pasta do workspace',
+    properties: ['openDirectory', 'createDirectory']
+  });
+
+  if (result.canceled || !result.filePaths.length) {
+    return { canceled: true, path: '' };
+  }
+
+  return { canceled: false, path: result.filePaths[0] };
+});
+
 registerWorkspaceIpc({ ipcMain, app });
+registerRuntimeAuthIpc({ ipcMain });
 swarmIpc = registerSwarmIpc({ ipcMain, getWindow: () => mainWindow });
 
 app.whenReady().then(() => {
