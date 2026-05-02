@@ -6,6 +6,7 @@ const CHANNELS = {
   launch: 'swarm:orchestration:launch',
   stop: 'swarm:orchestration:stop',
   input: 'swarm:orchestration:input',
+  resize: 'swarm:orchestration:resize',
   event: 'swarm:orchestration:event'
 };
 
@@ -213,6 +214,13 @@ function registerSwarmIpc({
       return { ok: false, error: 'Nenhum terminal ativo.' };
     }
     return active.swarm.writeToPane(input.paneId, input.data);
+  });
+
+  ipcMain.handle(CHANNELS.resize, async (_event, input = {}) => {
+    if (!active || !active.swarm) {
+      return { ok: false, error: 'Nenhum terminal ativo.' };
+    }
+    return active.swarm.resizePane(input.paneId, input.cols, input.rows);
   });
 
   return {

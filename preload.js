@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld('swarm', {
     launch: (input) => ipcRenderer.invoke('swarm:orchestration:launch', input),
     stop: (reason) => ipcRenderer.invoke('swarm:orchestration:stop', reason),
     input: (paneId, data) => ipcRenderer.invoke('swarm:orchestration:input', { paneId, data }),
+    resize: (paneId, cols, rows) => ipcRenderer.invoke('swarm:orchestration:resize', { paneId, cols, rows }),
     onEvent: (callback) => {
       if (typeof callback !== 'function') {
         return () => {};

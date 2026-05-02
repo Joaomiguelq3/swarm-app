@@ -90,6 +90,37 @@ function disposeAllTerminals() {
   }
 }
 
+function getTerminalSize(mount) {
+  const rect = mount.getBoundingClientRect();
+  return {
+    cols: Math.min(240, Math.max(60, Math.floor((rect.width || 720) / 8))),
+    rows: Math.min(80, Math.max(18, Math.floor((rect.height || 420) / 17)))
+  };
+}
+
+function resizePaneTerminal(paneId) {
+  const current = terminalInstances.get(Number(paneId));
+  if (!current || !current.terminal || !current.mount) {
+    return;
+  }
+
+  const size = getTerminalSize(current.mount);
+  current.terminal.resize(size.cols, size.rows);
+  if (
+    window.swarm &&
+    window.swarm.orchestration &&
+    typeof window.swarm.orchestration.resize === 'function'
+  ) {
+    window.swarm.orchestration.resize(paneId, size.cols, size.rows);
+  }
+}
+
+function resizeAllTerminals() {
+  for (const paneId of terminalInstances.keys()) {
+    resizePaneTerminal(paneId);
+  }
+}
+
 function mountPaneTerminal(pane, mount) {
   if (!mount) {
     return;
@@ -102,14 +133,15 @@ function mountPaneTerminal(pane, mount) {
     return;
   }
 
+  const size = getTerminalSize(mount);
   const terminal = new TerminalCtor({
     convertEol: true,
     cursorBlink: true,
     disableStdin: false,
     fontFamily: 'Consolas, "Cascadia Mono", monospace',
     fontSize: 12,
-    rows: 30,
-    cols: 120,
+    rows: size.rows,
+    cols: size.cols,
     theme: {
       background: '#050505',
       foreground: '#d7ffd7',
@@ -127,6 +159,7 @@ function mountPaneTerminal(pane, mount) {
   });
 
   terminal.open(mount);
+  mount.addEventListener('pointerdown', () => terminal.focus());
   terminal.onData((data) => {
     if (
       window.swarm &&
@@ -137,12 +170,15 @@ function mountPaneTerminal(pane, mount) {
     }
   });
 
-  terminalInstances.set(Number(pane.id), { terminal });
+  terminalInstances.set(Number(pane.id), { terminal, mount });
+  window.setTimeout(() => resizePaneTerminal(pane.id), 0);
 
   if (Array.isArray(pane.output) && pane.output.length > 0) {
     terminal.write(pane.output.join(''));
   } else {
-    terminal.writeln('Codex aguardando inicio do novo projeto...');
+    terminal.writeln(pane.id === 1
+      ? 'Codex pronto para iniciar o novo projeto...'
+      : 'Codex aberto no mesmo projeto, pronto para uso manual...');
   }
 }
 
@@ -174,8 +210,9 @@ function setPaneStatusDom(paneId, status) {
   }
 }
 
-function buildNewProjectPrompt(description) {
-  return `$gsd-new-project ${String(description || '').trim()}`;
+function buildNewProjectPrompt(description, runtimeId) {
+  const command = runtimeId === 'claude' ? '/gsd-new-project' : '$gsd-new-project';
+  return `${command} ${String(description || '').trim()}`;
 }
 
 function getRuntimeView(runtimeId) {
@@ -764,6 +801,8 @@ function bindWorkspaceEvents() {
   if (launchButton) {
     launchButton.addEventListener('click', handleLaunch);
   }
+
+  window.addEventListener('resize', resizeAllTerminals);
 
   const stopButton = getElement('stop-swarm-button');
   if (stopButton) {
@@ -1355,7 +1394,7 @@ async function handleLaunch() {
   const agentInput = getElement('agent-count');
   const projectPrompt = missionInput ? missionInput.value.trim() : '';
   const agentCount = agentInput ? Number.parseInt(agentInput.value, 10) : 3;
-  const launchRuntime = 'codex';
+  const launchRuntime = workspace.runtime || 'codex';
 
   if (!workspace) {
     addFeedEvent('error', 'workspace ativo ausente');
@@ -1370,13 +1409,6 @@ async function handleLaunch() {
     return;
   }
 
-  if (workspace.runtime !== launchRuntime && window.swarm?.workspaces?.updateRuntime) {
-    const nextModel = resolveModelForRuntime(launchRuntime);
-    const result = await window.swarm.workspaces.updateRuntime(workspace.id, launchRuntime, nextModel);
-    applyWorkspaceResult(result);
-    addFeedEvent('runtime', 'runtime alterado para CODEX para iniciar novo projeto');
-  }
-
   if (hasRuntimeBridge('status')) {
     await refreshRuntimeStatus(false);
     if (!state.runtimeStatus || state.runtimeStatus.runtime !== launchRuntime || state.runtimeStatus.status !== 'available') {
@@ -1385,7 +1417,7 @@ async function handleLaunch() {
     }
   }
 
-  const mission = buildNewProjectPrompt(projectPrompt);
+  const mission = buildNewProjectPrompt(projectPrompt, launchRuntime);
   state.launchInProgress = true;
   setWorkspaceControlsDisabled(true);
   updateStopButtonState();

@@ -68,6 +68,7 @@ function defaultSpawnAdapter({ runtime, cwd }) {
   return {
     write: (data) => pty.write(data),
     kill: () => pty.kill(),
+    resize: (cols, rows) => pty.resize(cols, rows),
     onData: (listener) => pty.onData(listener),
     onExit: (listener) => pty.onExit(listener)
   };
@@ -305,6 +306,16 @@ function createSwarm(options = {}) {
       }
       child.write(String(data || ''));
       return { ok: true };
+    },
+    resizePane(paneId, cols, rows) {
+      const child = paneProcesses.get(Number(paneId));
+      if (!child || typeof child.resize !== 'function') {
+        return { ok: false, error: `Terminal ${paneId} nao esta ativo.` };
+      }
+      const safeCols = Math.min(240, Math.max(40, Number.parseInt(cols, 10) || 120));
+      const safeRows = Math.min(80, Math.max(12, Number.parseInt(rows, 10) || 30));
+      child.resize(safeCols, safeRows);
+      return { ok: true, cols: safeCols, rows: safeRows };
     },
     onEvent(listener) {
       emitter.on('event', listener);

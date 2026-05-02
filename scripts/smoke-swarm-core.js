@@ -28,6 +28,9 @@ function createFakeSpawn() {
       kill() {
         emitter.emit('exit', { exitCode: 143 });
       },
+      resize(cols, rows) {
+        writes.push(`resize:${cols}x${rows}`);
+      },
       onData(listener) {
         emitter.on('data', listener);
       },
@@ -81,13 +84,15 @@ async function main() {
   assert.strictEqual(result.tasks.length, 2);
   const inputResult = swarm.writeToPane(1, 'usuario digitou');
   assert.strictEqual(inputResult.ok, true, 'pane input must write to active process');
+  const resizeResult = swarm.resizePane(1, 100, 32);
+  assert.strictEqual(resizeResult.ok, true, 'pane resize must reach active process');
   await waitFor(events, 'mission:done');
 
   assert(events.some((event) => event.type === 'mission:start'), 'mission start event missing');
   assert(events.some((event) => event.type === 'agent:start'), 'agent start event missing');
   assert(events.some((event) => event.type === 'agent:output'), 'agent output event missing');
   assert(events.some((event) => event.type === 'agent:exit' && event.status === 'DONE'), 'done exit missing');
-  assert.strictEqual(fake.writes.length, 2, 'only project terminal receives prompt and pane input is forwarded');
+  assert.strictEqual(fake.writes.length, 3, 'project prompt, pane input, and resize are forwarded');
   console.log('smoke-swarm-core ok');
 }
 

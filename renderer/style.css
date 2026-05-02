@@ -759,14 +759,14 @@ dd {
 
 .workspace-grid-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   gap: 12px;
   min-height: 0;
 }
 
 .terminal-area {
   display: grid;
-  grid-template-rows: minmax(320px, 1fr) auto minmax(130px, 0.32fr);
+  grid-template-rows: minmax(560px, 1fr) auto minmax(130px, 0.32fr);
   gap: 12px;
   min-width: 0;
   padding: 12px;
@@ -774,9 +774,10 @@ dd {
 
 .pane-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  grid-auto-rows: minmax(420px, 0.88fr);
   gap: 12px;
-  min-height: 320px;
+  min-height: 560px;
 }
 
 .pane-grid.launching .terminal-pane {
@@ -788,7 +789,7 @@ dd {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
-  min-height: 320px;
+  min-height: 420px;
   border: 1px solid var(--line);
   background: var(--bg);
 }
@@ -893,8 +894,8 @@ dd {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
-  padding: 12px;
-  overflow: auto;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .xterm-mount {
@@ -902,6 +903,7 @@ dd {
   min-height: 0;
   height: 100%;
   overflow: hidden;
+  background: #050505;
 }
 
 .xterm-mount .xterm {

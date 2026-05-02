@@ -45,6 +45,7 @@ function main() {
   includes(css, '.pane-grid', 'pane grid CSS');
   includes(css, '.terminal-pane', 'terminal pane CSS');
   includes(css, '.xterm-mount', 'xterm mount CSS');
+  includes(css, 'repeat(auto-fit, minmax(390px, 1fr))', 'large wrapping terminal grid');
   includes(css, '.pane-status-dot.status-thinking', 'thinking status CSS');
   includes(css, '.pane-status-dot.status-writing', 'writing status CSS');
   includes(css, '.pane-status-dot.status-done', 'done status CSS');
@@ -67,7 +68,8 @@ function main() {
   includes(js, 'getModelLabel', 'model metadata label renderer');
   includes(js, 'handleLaunch', 'real launch handler');
   includes(js, 'buildNewProjectPrompt', 'new project prompt builder');
-  includes(js, "const launchRuntime = 'codex'", 'Codex launch runtime');
+  includes(js, 'resizePaneTerminal', 'terminal resize helper');
+  includes(js, "const launchRuntime = workspace.runtime || 'codex'", 'selected launch runtime');
 
   for (const oldModel of ['gpt-4o', 'gpt-5.2', 'claude-3-', 'latest']) {
     assert.ok(!js.includes(oldModel), `renderer should not hardcode old model marker: ${oldModel}`);
