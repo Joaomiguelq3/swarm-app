@@ -687,6 +687,11 @@ dd {
   min-height: 320px;
 }
 
+.pane-grid.launching .terminal-pane {
+  border-color: rgba(0, 255, 136, 0.64);
+  box-shadow: 0 0 16px var(--green-dim);
+}
+
 .terminal-pane {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -795,13 +800,29 @@ dd {
   position: relative;
   min-height: 0;
   padding: 12px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .terminal-placeholder {
   margin: 0;
   color: var(--text-dim);
   font-size: 12px;
+}
+
+.terminal-task {
+  margin: 0 0 10px;
+  color: var(--green);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.terminal-output {
+  margin: 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .mission-bar {
@@ -903,6 +924,68 @@ dd {
   border: 1px solid var(--line);
   background: var(--bg3);
   padding: 10px;
+}
+
+.launch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.launch-overlay.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.launch-overlay-inner {
+  display: grid;
+  gap: 14px;
+  width: min(640px, 100%);
+  border: 1px solid rgba(0, 255, 136, 0.34);
+  background: var(--bg2);
+  padding: 22px;
+  box-shadow: 0 0 32px rgba(0, 0, 0, 0.58);
+}
+
+.launch-title {
+  margin: 0;
+  color: var(--green);
+  font-size: 18px;
+}
+
+.launch-runtime {
+  min-height: 24px;
+}
+
+.launch-task-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.launch-task {
+  min-height: 30px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  padding: 8px 10px;
+  font-size: 12px;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: launch-task-in 0.32s ease forwards;
+}
+
+@keyframes launch-task-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1060px) {

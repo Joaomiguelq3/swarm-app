@@ -172,11 +172,11 @@
 
 | Plan | Wave | Objective | Status |
 |------|------|-----------|--------|
-| 06-01 | 1 | Swarm orchestrator core and fake runtime | Planned |
-| 06-02 | 2 | Swarm IPC, sentinel, and TTS integration | Planned |
-| 06-03 | 3 | Renderer live orchestration binding | Planned |
-| 06-04 | 4 | Launch overlay and lifecycle polish | Planned |
-| 06-05 | 5 | Phase 6 aggregate verification | Planned |
+| 06-01 | 1 | Swarm orchestrator core and fake runtime | Complete |
+| 06-02 | 2 | Swarm IPC, sentinel, and TTS integration | Complete |
+| 06-03 | 3 | Renderer live orchestration binding | Complete |
+| 06-04 | 4 | Launch overlay and lifecycle polish | Complete |
+| 06-05 | 5 | Phase 6 aggregate verification | Complete |
 
 **Wave dependency notes:**
 - Wave 1 builds the orchestration core and fake-runtime verification base.
@@ -202,7 +202,7 @@
 7. Launch overlay displays runtime badge and task animation.
 8. TTS announces agent completion, errors, and mission completion.
 
-**Status:** Planned on 2026-05-01.
+**Status:** Complete on 2026-05-01.
 
 ### Phase 7: Shutdown, Hardening, and Demo Readiness
 
@@ -219,4 +219,4 @@
 
 ## Next Step
 
-Run `$gsd-discuss-phase 5` to gather implementation context for Phase 5.
+Run `$gsd-discuss-phase 7` to gather implementation context for Phase 7.

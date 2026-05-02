@@ -1,0 +1,160 @@
+const { createSwarm } = require('./swarm');
+const { createSentinel } = require('./sentinel');
+const { speak } = require('./tts');
+
+const CHANNELS = {
+  launch: 'swarm:orchestration:launch',
+  stop: 'swarm:orchestration:stop',
+  event: 'swarm:orchestration:event'
+};
+
+function getWorkspacePath(input = {}) {
+  return input.workspacePath || input.path || input.workspace?.path;
+}
+
+function registerSwarmIpc({
+  ipcMain,
+  getWindow,
+  createSwarmFactory = createSwarm,
+  createSentinelFactory = createSentinel,
+  speakFn = speak
+}) {
+  let active = null;
+
+  function send(payload) {
+    const window = typeof getWindow === 'function' ? getWindow() : null;
+    if (window && !window.isDestroyed()) {
+      window.webContents.send(CHANNELS.event, payload);
+    }
+  }
+
+  function speakBestEffort(text) {
+    Promise.resolve()
+      .then(() => speakFn(text))
+      .then((result) => {
+        if (result && result.ok === false && result.error) {
+          send({
+            type: 'tts:warning',
+            status: 'IDLE',
+            message: `TTS ignorado: ${result.error}`,
+            timestamp: new Date().toISOString()
+          });
+        }
+      })
+      .catch((error) => {
+        send({
+          type: 'tts:warning',
+          status: 'IDLE',
+          message: `TTS ignorado: ${error.message}`,
+          timestamp: new Date().toISOString()
+        });
+      });
+  }
+
+  async function stopActive(reason = 'stop') {
+    if (!active) {
+      return { ok: true, stopped: false };
+    }
+
+    const current = active;
+    active = null;
+    if (current.unsubscribe) {
+      current.unsubscribe();
+    }
+    if (current.sentinel) {
+      await current.sentinel.stop();
+    }
+    if (current.swarm && reason !== 'mission-complete') {
+      current.swarm.stop(reason);
+    }
+    return { ok: true, stopped: true };
+  }
+
+  ipcMain.handle(CHANNELS.launch, async (_event, input = {}) => {
+    await stopActive('restart');
+
+    const workspacePath = getWorkspacePath(input);
+    const swarm = createSwarmFactory();
+    const sentinel = workspacePath
+      ? createSentinelFactory(workspacePath, {
+          onEvent(fileEvent) {
+            send({
+              type: 'file:event',
+              status: 'WRITING',
+              file: fileEvent,
+              message: `${fileEvent.arquivo} ${fileEvent.acao}`,
+              timestamp: fileEvent.timestamp
+            });
+          }
+        })
+      : null;
+
+    const unsubscribe = swarm.onEvent((event) => {
+      send(event);
+      if (event.type === 'mission:start') {
+        const label = event.runtime === 'claude' ? 'Claude Code' : event.runtime === 'codex' ? 'Codex' : event.runtime;
+        const count = Array.isArray(event.tasks) ? event.tasks.length : 0;
+        speakBestEffort(`Swarm iniciado com ${label}. ${count} agentes em paralelo.`);
+      }
+      if (event.type === 'agent:exit' && event.status === 'DONE') {
+        speakBestEffort(`Agente ${event.paneId || ''} concluido.`);
+      }
+      if (event.type === 'agent:exit' && event.status === 'ERROR') {
+        speakBestEffort(`Erro no agente ${event.paneId || ''}.`);
+      }
+      if (event.type === 'mission:done') {
+        speakBestEffort(event.status === 'DONE' ? 'Missao concluida.' : 'Missao concluida com erros.');
+        if (active && active.swarm === swarm) {
+          stopActive('mission-complete').catch((error) => {
+            send({
+              type: 'mission:error',
+              status: 'ERROR',
+              message: error.message,
+              timestamp: new Date().toISOString()
+            });
+          });
+        }
+      }
+    });
+
+    active = { swarm, sentinel, unsubscribe };
+
+    if (sentinel) {
+      sentinel.onError((error) => {
+        send({
+          type: 'file:error',
+          status: 'ERROR',
+          message: `Sentinel: ${error.message}`,
+          timestamp: new Date().toISOString()
+        });
+      });
+      sentinel.start();
+    }
+
+    try {
+      return swarm.launch(input);
+    } catch (error) {
+      await stopActive('launch-error');
+      send({
+        type: 'mission:error',
+        status: 'ERROR',
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
+      throw error;
+    }
+  });
+
+  ipcMain.handle(CHANNELS.stop, async (_event, reason = 'stop') => {
+    return stopActive(reason);
+  });
+
+  return {
+    stop: stopActive
+  };
+}
+
+module.exports = {
+  CHANNELS,
+  registerSwarmIpc
+};

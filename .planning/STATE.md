@@ -5,14 +5,14 @@
 See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** One developer can launch and supervise multiple independent AI coding tasks in parallel, with clear runtime choice, live terminal visibility, file-change awareness, and graceful process control.
-**Current focus:** Phase 6 - Swarm Launch and Live Orchestration
+**Current focus:** Phase 7 - Shutdown, Hardening, and Demo Readiness
 
 ## Current Phase
 
-- **Phase:** 6
-- **Name:** Swarm Launch and Live Orchestration
-- **Status:** ready_to_execute
-- **Next command:** `$gsd-execute-phase 6`
+- **Phase:** 7
+- **Name:** Shutdown, Hardening, and Demo Readiness
+- **Status:** ready_to_discuss
+- **Next command:** `$gsd-discuss-phase 7`
 
 ## Completed
 
@@ -37,6 +37,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 5 executed and verified.
 - Phase 6 context gathered.
 - Phase 6 planned.
+- Phase 6 executed and verified.
 
 ## Open Decisions
 
@@ -51,14 +52,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 3 preserves existing `brain.json`, `CLAUDE.md`, and `AGENTS.md`.
 - Phase 3 exposes minimal workspace IPC without building the full Home UI.
 - Whether mixed runtime execution in one swarm belongs in v1 or v2; currently deferred to v2.
-- Phase 5 implements stop-before-runtime-switch as a named UI lifecycle hook/local pane reset; real child-process termination is wired in later orchestration/hardening phases.
+- Phase 5 implements stop-before-runtime-switch as a named UI lifecycle hook/local pane reset; Phase 6 connects it to real orchestration stop.
 - Phase 6 will use deterministic local mission decomposition first; external AI decomposition is deferred.
 - Phase 6 automated verification uses a fake/test runtime and does not require real Claude Code or Codex binaries.
+- Phase 7 will rehearse real Claude Code and Codex demo runs and harden close/stop behavior.
 
 ## Last Session
 
-- **Stopped at:** Phase 6 planned
-- **Resume file:** `.planning/phases/06-swarm-launch-and-live-orchestration/06-05-PLAN.md`
+- **Stopped at:** Phase 6 executed and verified
+- **Resume file:** `.planning/ROADMAP.md`
 
 ## Quick Tasks Completed
 

@@ -1,8 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { registerWorkspaceIpc } = require('./src/workspace-ipc');
+const { registerSwarmIpc } = require('./src/swarm-ipc');
 
 let mainWindow = null;
+let swarmIpc = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -37,6 +39,7 @@ ipcMain.handle('swarm:get-app-info', () => ({
 }));
 
 registerWorkspaceIpc({ ipcMain, app });
+swarmIpc = registerSwarmIpc({ ipcMain, getWindow: () => mainWindow });
 
 app.whenReady().then(() => {
   createWindow();
@@ -49,6 +52,9 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
+  if (swarmIpc) {
+    swarmIpc.stop('app-close');
+  }
   if (process.platform !== 'darwin') {
     app.quit();
   }

@@ -20,7 +20,11 @@ const state = {
   loading: true,
   activeWorkspace: null,
   panes: createDefaultPanes(),
-  feed: []
+  feed: [],
+  missionActive: false,
+  launchInProgress: false,
+  swarmUnsubscribe: null,
+  overlayTimer: null
 };
 
 function getElement(id) {
@@ -61,7 +65,9 @@ function getRuntimeView(runtimeId) {
 function createDefaultPanes() {
   return [1, 2, 3].map((index) => ({
     id: index,
-    status: 'IDLE'
+    status: 'IDLE',
+    output: [],
+    taskTitle: ''
   }));
 }
 
@@ -409,6 +415,7 @@ function initHome() {
 async function initWorkspace() {
   showWorkspaceLoading();
   bindWorkspaceEvents();
+  subscribeToOrchestration();
 
   if (!hasWorkspaceBridge('list')) {
     showWorkspaceError('workspace bridge missing');
@@ -487,8 +494,29 @@ function bindWorkspaceEvents() {
 
   const launchButton = getElement('launch-swarm-button');
   if (launchButton) {
-    launchButton.addEventListener('click', handleLaunchPlaceholder);
+    launchButton.addEventListener('click', handleLaunch);
   }
+}
+
+function hasOrchestrationBridge(method) {
+  return Boolean(
+    window.swarm &&
+    window.swarm.orchestration &&
+    typeof window.swarm.orchestration[method] === 'function'
+  );
+}
+
+function subscribeToOrchestration() {
+  if (state.swarmUnsubscribe) {
+    state.swarmUnsubscribe();
+    state.swarmUnsubscribe = null;
+  }
+
+  if (!hasOrchestrationBridge('onEvent')) {
+    return;
+  }
+
+  state.swarmUnsubscribe = window.swarm.orchestration.onEvent(handleSwarmEvent);
 }
 
 function renderWorkspace() {
@@ -596,10 +624,25 @@ function renderPanes() {
     body.className = 'terminal-surface';
     body.dataset.terminalMount = String(pane.id);
 
-    const prompt = document.createElement('p');
-    prompt.className = 'terminal-placeholder';
-    prompt.textContent = 'terminal aguardando orquestracao';
-    body.appendChild(prompt);
+    if (pane.taskTitle) {
+      const task = document.createElement('p');
+      task.className = 'terminal-task';
+      task.textContent = pane.taskTitle;
+      body.appendChild(task);
+    }
+
+    const output = Array.isArray(pane.output) ? pane.output : [];
+    if (output.length === 0) {
+      const prompt = document.createElement('p');
+      prompt.className = 'terminal-placeholder';
+      prompt.textContent = 'terminal aguardando orquestracao';
+      body.appendChild(prompt);
+    } else {
+      const pre = document.createElement('pre');
+      pre.className = 'terminal-output';
+      pre.textContent = output.join('');
+      body.appendChild(pre);
+    }
 
     article.append(header, body);
     grid.appendChild(article);
@@ -662,7 +705,8 @@ function renderNodePanel() {
   setText('node-workspace-path', workspace.path || '');
   setText('node-model-value', workspace.model || 'default');
   setText('node-danger-state', 'DANGER OFF');
-  setText('node-process-state', 'processos ativos: 0');
+  const activeCount = state.panes.filter((pane) => ['THINKING', 'WRITING'].includes(pane.status)).length;
+  setText('node-process-state', `processos ativos: ${activeCount}`);
 
   const badgeSlot = clearChildren('node-runtime-badge');
   if (badgeSlot) {
@@ -767,16 +811,270 @@ function resolveModelForRuntime(runtimeId) {
 }
 
 async function stopActiveProcesses(reason) {
+  if (hasOrchestrationBridge('stop')) {
+    try {
+      await window.swarm.orchestration.stop(reason);
+    } catch (error) {
+      addFeedEvent('error', error.message || 'erro ao parar orquestracao');
+    }
+  }
+
+  state.missionActive = false;
+  state.launchInProgress = false;
   state.panes = state.panes.map((pane) => ({
     ...pane,
-    status: 'IDLE'
+    status: 'IDLE',
+    taskTitle: ''
   }));
-  addFeedEvent('process', `stopActiveProcesses: panes resetados antes de ${reason}`);
+  hideLaunchOverlay();
+  addFeedEvent('process', `orquestracao parada: ${reason}`);
   renderPanes();
+  renderNodePanel();
 }
 
-function handleLaunchPlaceholder() {
-  addFeedEvent('mission', 'launch pendente: orquestracao entra na fase 6');
+async function handleLaunch() {
+  const workspace = state.activeWorkspace;
+  const missionInput = getElement('mission-input');
+  const agentInput = getElement('agent-count');
+  const mission = missionInput ? missionInput.value.trim() : '';
+  const agentCount = agentInput ? Number.parseInt(agentInput.value, 10) : 3;
+
+  if (!workspace) {
+    addFeedEvent('error', 'workspace ativo ausente');
+    return;
+  }
+  if (!mission) {
+    addFeedEvent('error', 'informe uma missao antes de iniciar');
+    return;
+  }
+  if (!hasOrchestrationBridge('launch')) {
+    addFeedEvent('error', 'orchestration bridge missing');
+    return;
+  }
+
+  state.launchInProgress = true;
+  setWorkspaceControlsDisabled(true);
+  addFeedEvent('mission', 'decompondo missao e preparando agentes');
+
+  try {
+    const result = await window.swarm.orchestration.launch({
+      mission,
+      agentCount,
+      workspace,
+      workspacePath: workspace.path,
+      runtime: workspace.runtime,
+      model: workspace.model
+    });
+    if (result && Array.isArray(result.tasks)) {
+      showLaunchOverlay(result.tasks, workspace.runtime);
+    }
+  } catch (error) {
+    state.launchInProgress = false;
+    state.missionActive = false;
+    hideLaunchOverlay();
+    addFeedEvent('error', error.message || 'erro ao iniciar swarm');
+    setWorkspaceControlsDisabled(false);
+  }
+}
+
+function handleSwarmEvent(event) {
+  if (!event || !event.type) {
+    return;
+  }
+
+  if (event.type === 'mission:start') {
+    state.missionActive = true;
+    state.launchInProgress = false;
+    const tasks = Array.isArray(event.tasks) ? event.tasks : [];
+    state.panes = createPanesForTasks(tasks);
+    addFeedEvent('mission', event.message || 'swarm iniciado');
+    showLaunchOverlay(tasks, event.runtime || state.activeWorkspace?.runtime);
+    renderWorkspace();
+    return;
+  }
+
+  if (event.type === 'agent:start') {
+    updatePane(event.paneId, {
+      status: event.status || 'THINKING',
+      taskTitle: event.task?.title || event.message || ''
+    });
+    addFeedEvent('agent', event.message || `agente ${event.paneId} iniciado`);
+    fadeLaunchOverlaySoon();
+    return;
+  }
+
+  if (event.type === 'agent:output') {
+    appendPaneOutput(event.paneId, event.output || '');
+    updatePane(event.paneId, { status: event.status || 'WRITING' }, false);
+    renderPanes();
+    renderNodePanel();
+    return;
+  }
+
+  if (event.type === 'agent:exit') {
+    updatePane(event.paneId, { status: event.status || 'DONE' });
+    addFeedEvent(event.status === 'ERROR' ? 'error' : 'agent', event.message || `agente ${event.paneId} finalizado`);
+    return;
+  }
+
+  if (event.type === 'agent:error') {
+    updatePane(event.paneId, {
+      status: 'ERROR',
+      output: [`${event.message || event.error || 'erro no agente'}\n`]
+    });
+    addFeedEvent('error', event.message || event.error || 'erro no agente');
+    hideLaunchOverlay();
+    return;
+  }
+
+  if (event.type === 'file:event') {
+    addFeedEvent('file', event.message || `${event.file?.arquivo || 'arquivo'} ${event.file?.acao || ''}`);
+    const activePane = state.panes.find((pane) => ['THINKING', 'WRITING'].includes(pane.status));
+    if (activePane) {
+      updatePane(activePane.id, { status: 'WRITING' });
+    }
+    return;
+  }
+
+  if (event.type === 'mission:done') {
+    state.missionActive = false;
+    state.launchInProgress = false;
+    hideLaunchOverlay();
+    addFeedEvent(event.status === 'ERROR' ? 'error' : 'mission', event.message || 'missao concluida');
+    setWorkspaceControlsDisabled(false);
+    renderNodePanel();
+    return;
+  }
+
+  if (event.type === 'mission:error') {
+    state.missionActive = false;
+    state.launchInProgress = false;
+    hideLaunchOverlay();
+    addFeedEvent('error', event.message || 'erro na missao');
+    setWorkspaceControlsDisabled(false);
+    return;
+  }
+
+  if (event.type === 'mission:stop') {
+    state.missionActive = false;
+    state.launchInProgress = false;
+    hideLaunchOverlay();
+    addFeedEvent('process', event.message || 'swarm parado');
+    setWorkspaceControlsDisabled(false);
+    return;
+  }
+
+  if (event.type === 'tts:warning' || event.type === 'file:error') {
+    addFeedEvent(event.type === 'file:error' ? 'error' : 'process', event.message);
+  }
+}
+
+function createPanesForTasks(tasks) {
+  const count = Math.max(3, tasks.length);
+  return Array.from({ length: count }, (_, index) => {
+    const paneId = index + 1;
+    const task = tasks.find((item) => item.paneId === paneId);
+    return {
+      id: paneId,
+      status: task ? 'THINKING' : 'IDLE',
+      output: [],
+      taskTitle: task ? task.title : ''
+    };
+  });
+}
+
+function updatePane(paneId, patch, shouldRender = true) {
+  const id = Number(paneId);
+  state.panes = state.panes.map((pane) => {
+    if (pane.id !== id) {
+      return pane;
+    }
+    return {
+      ...pane,
+      ...patch,
+      status: normalizeStatus(patch.status || pane.status)
+    };
+  });
+  if (shouldRender) {
+    renderPanes();
+    renderNodePanel();
+  }
+}
+
+function appendPaneOutput(paneId, output) {
+  const id = Number(paneId);
+  state.panes = state.panes.map((pane) => {
+    if (pane.id !== id) {
+      return pane;
+    }
+    const nextOutput = [...(pane.output || []), String(output)].slice(-80);
+    return {
+      ...pane,
+      output: nextOutput
+    };
+  });
+}
+
+function showLaunchOverlay(tasks, runtimeId) {
+  const overlay = getElement('launch-overlay');
+  const runtimeSlot = clearChildren('launch-overlay-runtime');
+  const taskList = clearChildren('launch-overlay-tasks');
+  const paneGrid = getElement('pane-grid');
+
+  if (!overlay) {
+    return;
+  }
+
+  const runtime = getRuntimeView(runtimeId);
+  if (runtimeSlot) {
+    runtimeSlot.appendChild(createRuntimeBadge(runtime));
+  }
+
+  if (taskList) {
+    tasks.forEach((task, index) => {
+      const item = document.createElement('li');
+      item.className = 'launch-task';
+      item.style.animationDelay = `${index * 90}ms`;
+      item.textContent = task.title || `Agente ${index + 1}`;
+      taskList.appendChild(item);
+    });
+  }
+
+  overlay.hidden = false;
+  overlay.classList.remove('fade-out');
+  if (paneGrid) {
+    paneGrid.classList.add('launching');
+  }
+  fadeLaunchOverlaySoon();
+}
+
+function fadeLaunchOverlaySoon() {
+  if (state.overlayTimer) {
+    window.clearTimeout(state.overlayTimer);
+  }
+  state.overlayTimer = window.setTimeout(() => {
+    const overlay = getElement('launch-overlay');
+    if (overlay && !overlay.hidden) {
+      overlay.classList.add('fade-out');
+    }
+    state.overlayTimer = window.setTimeout(hideLaunchOverlay, 520);
+  }, 900);
+}
+
+function hideLaunchOverlay() {
+  const overlay = getElement('launch-overlay');
+  const paneGrid = getElement('pane-grid');
+  if (state.overlayTimer) {
+    window.clearTimeout(state.overlayTimer);
+    state.overlayTimer = null;
+  }
+  if (overlay) {
+    overlay.hidden = true;
+    overlay.classList.remove('fade-out');
+  }
+  if (paneGrid) {
+    paneGrid.classList.remove('launching');
+  }
 }
 
 function setWorkspaceControlsDisabled(disabled) {
@@ -785,6 +1083,10 @@ function setWorkspaceControlsDisabled(disabled) {
     if (control) {
       control.disabled = disabled;
     }
+  }
+  const launchButton = getElement('launch-swarm-button');
+  if (launchButton) {
+    launchButton.textContent = disabled ? 'SWARM ATIVO' : 'LAUNCH SWARM';
   }
 }
 

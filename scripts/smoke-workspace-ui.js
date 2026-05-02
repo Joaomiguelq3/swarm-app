@@ -59,7 +59,7 @@ function main() {
   includes(js, 'stopActiveProcesses', 'stop hook');
   includes(js, "await stopActiveProcesses('runtime-switch')", 'stop before runtime persistence');
   includes(js, 'renderModelOptions', 'runtime model option renderer');
-  includes(js, 'handleLaunchPlaceholder', 'honest launch placeholder');
+  includes(js, 'handleLaunch', 'real launch handler');
 
   for (const model of ['opus-4', 'sonnet-4', 'haiku', 'gpt-4o', 'gpt-4.1', 'o3', 'o4-mini']) {
     includes(js, model, `model option ${model}`);

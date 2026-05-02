@@ -15,8 +15,8 @@
 
 ### Runtime
 
-- [ ] **RUN-01**: SWARM spawns Claude Code with `claude --dangerously-skip-permissions`.
-- [ ] **RUN-02**: SWARM spawns Codex with `codex --approval-mode full-auto`.
+- [x] **RUN-01**: SWARM spawns Claude Code with `claude --dangerously-skip-permissions`.
+- [x] **RUN-02**: SWARM spawns Codex with `codex --approval-mode full-auto`.
 - [x] **RUN-03**: SWARM stores runtime and model per workspace.
 - [x] **RUN-04**: User can switch the current workspace runtime from the node panel.
 - [x] **RUN-05**: Runtime switch kills active processes before applying the new runtime.
@@ -29,25 +29,25 @@
 - [x] **TRM-01**: User can see multiple terminal panes in the main workspace screen.
 - [ ] **TRM-02**: Each pane renders a real interactive terminal using xterm.js and node-pty.
 - [x] **TRM-03**: Each pane shows runtime indicator and status.
-- [ ] **TRM-04**: Pane status can display IDLE, THINKING, WRITING, DONE, and ERROR.
-- [ ] **TRM-05**: Terminal output streams live from each agent process.
+- [x] **TRM-04**: Pane status can display IDLE, THINKING, WRITING, DONE, and ERROR.
+- [x] **TRM-05**: Terminal output streams live from each agent process.
 
 ### Swarm Orchestration
 
-- [ ] **SWM-01**: User can enter a mission and select agent count.
-- [ ] **SWM-02**: SWARM scouts the project before launching agents.
-- [ ] **SWM-03**: SWARM decomposes the mission into independent tasks.
-- [ ] **SWM-04**: SWARM spawns multiple runtime processes in parallel.
-- [ ] **SWM-05**: Each spawned process receives its own task and project context.
-- [ ] **SWM-06**: SWARM emits agent lifecycle events through IPC.
-- [ ] **SWM-07**: SWARM can stop all active agents gracefully.
+- [x] **SWM-01**: User can enter a mission and select agent count.
+- [x] **SWM-02**: SWARM scouts the project before launching agents.
+- [x] **SWM-03**: SWARM decomposes the mission into independent tasks.
+- [x] **SWM-04**: SWARM spawns multiple runtime processes in parallel.
+- [x] **SWM-05**: Each spawned process receives its own task and project context.
+- [x] **SWM-06**: SWARM emits agent lifecycle events through IPC.
+- [x] **SWM-07**: SWARM can stop all active agents gracefully.
 
 ### File Monitoring
 
-- [ ] **FIL-01**: SWARM maps the project while ignoring `node_modules`, `.git`, `dist`, `build`, `.next`, `__pycache__`, and `venv`.
-- [ ] **FIL-02**: Scout captures compact context including first lines from important files.
-- [ ] **FIL-03**: Sentinel detects file creation, modification, and removal.
-- [ ] **FIL-04**: File events are shown in the shared activity feed.
+- [x] **FIL-01**: SWARM maps the project while ignoring `node_modules`, `.git`, `dist`, `build`, `.next`, `__pycache__`, and `venv`.
+- [x] **FIL-02**: Scout captures compact context including first lines from important files.
+- [x] **FIL-03**: Sentinel detects file creation, modification, and removal.
+- [x] **FIL-04**: File events are shown in the shared activity feed.
 
 ### User Interface
 
@@ -56,14 +56,14 @@
 - [x] **UI-03**: Main screen renders workspace tabs, terminal panes, mission bar, feed, map/files area, and node panel.
 - [x] **UI-04**: Claude Code badges use purple styling.
 - [x] **UI-05**: Codex badges use green styling.
-- [ ] **UI-06**: Launch overlay shows runtime badge, task typing animation, pane glow, and fade out.
+- [x] **UI-06**: Launch overlay shows runtime badge, task typing animation, pane glow, and fade out.
 - [x] **UI-07**: UI uses dark terminal theme with CSS puro.
 
 ### TTS and Persistence
 
-- [ ] **TTS-01**: SWARM announces swarm start with selected runtime and agent count.
-- [ ] **TTS-02**: SWARM announces agent completion and errors.
-- [ ] **TTS-03**: SWARM announces mission completion.
+- [x] **TTS-01**: SWARM announces swarm start with selected runtime and agent count.
+- [x] **TTS-02**: SWARM announces agent completion and errors.
+- [x] **TTS-03**: SWARM announces mission completion.
 - [x] **PRS-01**: SWARM writes `brain.json` in each project root.
 - [ ] **PRS-02**: SWARM kills child processes gracefully when closing the app.
 
@@ -95,8 +95,8 @@
 | WRK-03 | Phase 3 | Complete |
 | WRK-04 | Phase 4 | Complete |
 | WRK-05 | Phase 5 | Complete |
-| RUN-01 | Phase 2 | Pending |
-| RUN-02 | Phase 2 | Pending |
+| RUN-01 | Phase 6 | Complete |
+| RUN-02 | Phase 6 | Complete |
 | RUN-03 | Phase 3 | Complete |
 | RUN-04 | Phase 5 | Complete |
 | RUN-05 | Phase 5 | Complete |
@@ -106,29 +106,29 @@
 | TRM-01 | Phase 5 | Complete |
 | TRM-02 | Phase 2 | Pending |
 | TRM-03 | Phase 5 | Complete |
-| TRM-04 | Phase 6 | Pending |
-| TRM-05 | Phase 2 | Pending |
-| SWM-01 | Phase 6 | Pending |
-| SWM-02 | Phase 2 | Pending |
-| SWM-03 | Phase 6 | Pending |
-| SWM-04 | Phase 6 | Pending |
-| SWM-05 | Phase 6 | Pending |
-| SWM-06 | Phase 6 | Pending |
-| SWM-07 | Phase 7 | Pending |
-| FIL-01 | Phase 2 | Pending |
-| FIL-02 | Phase 2 | Pending |
-| FIL-03 | Phase 2 | Pending |
-| FIL-04 | Phase 6 | Pending |
+| TRM-04 | Phase 6 | Complete |
+| TRM-05 | Phase 6 | Complete |
+| SWM-01 | Phase 6 | Complete |
+| SWM-02 | Phase 6 | Complete |
+| SWM-03 | Phase 6 | Complete |
+| SWM-04 | Phase 6 | Complete |
+| SWM-05 | Phase 6 | Complete |
+| SWM-06 | Phase 6 | Complete |
+| SWM-07 | Phase 6 | Complete |
+| FIL-01 | Phase 2 | Complete |
+| FIL-02 | Phase 2 | Complete |
+| FIL-03 | Phase 2 | Complete |
+| FIL-04 | Phase 6 | Complete |
 | UI-01 | Phase 4 | Complete |
 | UI-02 | Phase 4 | Complete |
 | UI-03 | Phase 5 | Complete |
 | UI-04 | Phase 4 | Complete |
 | UI-05 | Phase 4 | Complete |
-| UI-06 | Phase 6 | Pending |
+| UI-06 | Phase 6 | Complete |
 | UI-07 | Phase 4 | Complete |
-| TTS-01 | Phase 2 | Pending |
-| TTS-02 | Phase 6 | Pending |
-| TTS-03 | Phase 6 | Pending |
+| TTS-01 | Phase 6 | Complete |
+| TTS-02 | Phase 6 | Complete |
+| TTS-03 | Phase 6 | Complete |
 | PRS-01 | Phase 3 | Complete |
 | PRS-02 | Phase 7 | Pending |
 
@@ -139,4 +139,4 @@
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after Phase 5 verification*
+*Last updated: 2026-05-01 after Phase 6 verification*

@@ -74,7 +74,7 @@
                   <h2>Projeto</h2>
                 </div>
               </div>
-              <p class="muted-copy">sentinel e scout conectam aqui na fase 6</p>
+              <p class="muted-copy">scout roda antes do launch; sentinel publica alteracoes no feed</p>
             </section>
 
             <section class="node-panel">
@@ -123,6 +123,14 @@
         </section>
       </section>
     </main>
+
+    <section id="launch-overlay" class="launch-overlay" aria-live="polite" hidden>
+      <div class="launch-overlay-inner">
+        <p class="launch-title">SWARM - spawning agents...</p>
+        <div id="launch-overlay-runtime" class="launch-runtime"></div>
+        <ul id="launch-overlay-tasks" class="launch-task-list"></ul>
+      </div>
+    </section>
 
     <script src="./app.js"></script>
   </body>
