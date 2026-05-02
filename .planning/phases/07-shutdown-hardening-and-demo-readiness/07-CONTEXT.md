@@ -58,7 +58,7 @@ This phase should not add mixed Claude+Codex agents in one swarm, replace determ
 
 ### Project Planning
 - `.planning/PROJECT.md` - Product context, active demo-readiness items, stack constraints, and lifecycle expectations.
-- `.planning/REQUIREMENTS.md` - Phase 7 requirement `PRS-02` plus demo-readiness expectations from active project context.
+- `.planning/REQUIREMENTS.md` - Phase 7 requirements `SWM-07` and `PRS-02` plus demo-readiness expectations from active project context.
 - `.planning/ROADMAP.md` - Phase 7 goal and success criteria.
 - `.planning/STATE.md` - Current project state after Phase 6 completion.
 - `.planning/phases/06-swarm-launch-and-live-orchestration/06-CONTEXT.md` - Phase 6 decisions that deferred final close cleanup and real demo rehearsal to Phase 7.

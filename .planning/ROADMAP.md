@@ -210,6 +210,26 @@
 
 **Requirements:** SWM-07, PRS-02
 
+**Plans:**
+
+| Plan | Wave | Objective | Status |
+|------|------|-----------|--------|
+| 07-01 | 1 | Idempotent shutdown and process cleanup | Planned |
+| 07-02 | 2 | Stop Swarm UI and visible error hardening | Planned |
+| 07-03 | 3 | Demo preflight and runbook | Planned |
+| 07-04 | 4 | Phase 7 aggregate verification and milestone state | Planned |
+
+**Wave dependency notes:**
+- Wave 1 hardens the core process lifecycle before UI or demo workflows depend on it.
+- Wave 2 is blocked on Wave 1 because `STOP SWARM` must call the hardened stop path.
+- Wave 3 is blocked on Waves 1 and 2 because the runbook should describe the final stop/error behavior.
+- Wave 4 is blocked on all previous waves because it verifies the complete Phase 7 contract.
+
+**Cross-cutting constraints:**
+- Main process owns process cleanup; renderer only calls preload orchestration APIs.
+- Automated verification uses fake/injected runtime paths; real Claude/Codex demo rehearsal is explicit/manual.
+- Phase 7 documentation must distinguish automated hardening from real demo evidence.
+
 **Success criteria:**
 1. Closing the app gracefully kills child processes.
 2. Stop-all action terminates active agents and resets pane state.
